@@ -94,7 +94,7 @@ public class UserController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso"), @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos"), @ApiResponse(responseCode = "404", description = "Usuário não encontrado")})
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<UserDTO>> updateUser(@PathVariable UUID id, @RequestBody UpdateUserRequest request) {
-        var command = new UpdateUserCommand(id, request.name(), request.email(), request.phone(), request.addressId(), request.roleId());
+        var command = new UpdateUserCommand(id, request.name(), request.email(), request.phone(), request.isActive(), request.addressId(), request.roleId());
         UserDTO updatedUserDTO = updateHandler.handle(command);
 
         EntityModel<UserDTO> entityModel = addLinksToUser(updatedUserDTO);

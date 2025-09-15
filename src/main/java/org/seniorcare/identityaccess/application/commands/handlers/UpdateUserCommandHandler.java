@@ -30,11 +30,12 @@ public class UpdateUserCommandHandler {
         if (userWithSameEmail.isPresent() && !userWithSameEmail.get().getId().equals(userToUpdate.getId())) {
             throw new IllegalStateException("Email " + command.email() + " is already in use by another user.");
         }
-        
+
         userToUpdate.update(
                 command.name(),
                 command.email(),
                 command.phone(),
+                command.isActive(),
                 command.addressId(),
                 command.roleId()
         );
