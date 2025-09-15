@@ -9,7 +9,7 @@ public class User {
     private String name;
     private String email;
     private String phone;
-    private boolean isActive;
+    private Boolean isActive;
     private UUID addressId;
     private String password;
     private UUID roleId;
@@ -35,7 +35,7 @@ public class User {
         this.deletedAt = null;
     }
 
-    public User(UUID id, String name, String email, String phone, boolean isActive, UUID addressId, String password, UUID roleId, Instant createdAt, Instant updatedAt, Instant deletedAt) {
+    public User(UUID id, String name, String email, String phone, Boolean isActive, UUID addressId, String password, UUID roleId, Instant createdAt, Instant updatedAt, Instant deletedAt) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -67,13 +67,6 @@ public class User {
     }
 
 
-    public void deactivate() {
-        if (!this.isActive) {
-            throw new IllegalStateException("User is already inactive.");
-        }
-        this.isActive = false;
-    }
-
     public void activate() {
         if (this.isActive) {
             throw new IllegalStateException("User is already active.");
@@ -89,17 +82,7 @@ public class User {
         this.updatedAt = Instant.now();
     }
 
-//    public void updateProfile(String newName, String newPhone) {
-//        if (newName == null || newName.trim().isEmpty()) {
-//            throw new IllegalArgumentException("User name cannot be empty.");
-//        }
-//        this.name = newName;
-//        this.phone = newPhone;
-//        this.updatedAt = Instant.now();
-//    }
-
-
-    public void update(String newName, String newEmail, String newPhone, UUID newAddressId, UUID newRoleId) {
+    public void update(String newName, String newEmail, String newPhone, Boolean isActive, UUID newAddressId, UUID newRoleId) {
 
         if (newName == null || newName.trim().isEmpty()) {
             throw new IllegalArgumentException("User name cannot be empty.");
@@ -114,6 +97,7 @@ public class User {
         this.name = newName;
         this.email = newEmail;
         this.phone = newPhone;
+        this.isActive = isActive;
         this.addressId = newAddressId;
         this.roleId = newRoleId;
 
