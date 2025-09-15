@@ -6,10 +6,8 @@ import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.UserM
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
-import java.lang.reflect.Field;
 import java.util.Optional;
 import java.util.UUID;
-
 
 @Repository
 @Primary
@@ -39,36 +37,28 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public void deleteById(UUID id) {
+        // Para Soft Delete, este método não deve ser usado diretamente.
+        // A lógica será: buscar o usuário, chamar user.softDelete(), e depois userRepo.save(user).
         this.jpaRepository.deleteById(id);
     }
-
 
     private User toEntity(UserModel model) {
         if (model == null) return null;
 
 
-        try {
-            User user = User.create(
-                    model.getName(), model.getEmail(), model.getPhone(),
-                    model.getAddressId(), "placeholder123", model.getRoleId()
-            );
-
-            Field idField = User.class.getDeclaredField("id");
-            idField.setAccessible(true);
-            idField.set(user, model.getId());
-
-            Field passwordField = User.class.getDeclaredField("password");
-            passwordField.setAccessible(true);
-            passwordField.set(user, model.getPassword());
-
-            Field isActiveField = User.class.getDeclaredField("isActive");
-            isActiveField.setAccessible(true);
-            isActiveField.set(user, model.isActive());
-
-            return user;
-        } catch (Exception e) {
-            throw new RuntimeException("Error mapping UserModel to User entity", e);
-        }
+        return new User(
+                model.getId(),
+                model.getName(),
+                model.getEmail(),
+                model.getPhone(),
+                model.isActive(),
+                model.getAddressId(),
+                model.getPassword(),
+                model.getRoleId(),
+                model.getCreatedAt(),
+                model.getUpdatedAt(),
+                model.getDeletedAt()
+        );
     }
 
     private UserModel toModel(User entity) {
@@ -83,6 +73,11 @@ public class UserRepositoryImpl implements IUserRepository {
         model.setAddressId(entity.getAddressId());
         model.setPassword(entity.getPassword());
         model.setRoleId(entity.getRoleId());
+
+        model.setCreatedAt(entity.getCreatedAt());
+        model.setUpdatedAt(entity.getUpdatedAt());
+        model.setDeletedAt(entity.getDeletedAt());
+
         return model;
     }
 }

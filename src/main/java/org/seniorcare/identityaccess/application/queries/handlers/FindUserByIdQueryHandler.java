@@ -31,7 +31,9 @@ public class FindUserByIdQueryHandler {
                 user.getName(),
                 user.getEmail(),
                 user.getPhone(),
-                user.isActive()
+                user.isActive(),
+                user.getCreatedAt(),
+                user.getUpdatedAt()
         );
     }
 }
