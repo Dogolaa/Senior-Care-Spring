@@ -6,9 +6,10 @@ import org.seniorcare.identityaccess.domain.repositories.IUserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 public class CreateUserCommandHandler {
-
     private final IUserRepository userRepository;
 
     public CreateUserCommandHandler(IUserRepository userRepository) {
@@ -16,12 +17,10 @@ public class CreateUserCommandHandler {
     }
 
     @Transactional
-    public void handle(CreateUserCommand command) {
-
+    public UUID handle(CreateUserCommand command) {
         if (userRepository.findByEmail(command.email()).isPresent()) {
             throw new IllegalStateException("An account with this email already exists.");
         }
-
         User newUser = User.create(
                 command.name(),
                 command.email(),
@@ -30,8 +29,7 @@ public class CreateUserCommandHandler {
                 command.plainTextPassword(),
                 command.roleId()
         );
-        
         userRepository.save(newUser);
+        return newUser.getId();
     }
-
 }
