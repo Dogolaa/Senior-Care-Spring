@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:15
+    container_name: seniorCare_db_Spring
+    restart: always
+    ports:
+      - '5435:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: SeniorCare
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+    container_name: seniorCare_spring
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - '8080:8080' # <- ALTERADO: Spring usa a porta 8080 por padrão
+    environment:
+      # Passamos o perfil 'docker' para a aplicação Spring.
+      # Isso fará com que ela use as configurações de banco de dados para o container.
+      SPRING_PROFILES_ACTIVE: docker
+
+volumes:
+  pgdata:
+    driver: local # Boa prática especificar o driver do volume
