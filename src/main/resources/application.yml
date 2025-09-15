@@ -29,6 +29,7 @@ spring:
     # Os scripts de migração devem ser colocados em 'src/main/resources/db/migration'
     # Ex: V1__Create_User_Table.sql
     baseline-on-migrate: true
+    placeholder-replacement: false
 
 ---
 # --- PERFIL PARA DESENVOLVIMENTO LOCAL ---

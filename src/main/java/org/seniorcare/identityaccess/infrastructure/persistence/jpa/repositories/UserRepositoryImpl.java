@@ -4,6 +4,8 @@ import org.seniorcare.identityaccess.domain.entities.User;
 import org.seniorcare.identityaccess.domain.repositories.IUserRepository;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.UserModel;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -40,6 +42,11 @@ public class UserRepositoryImpl implements IUserRepository {
         // Para Soft Delete, este método não deve ser usado diretamente.
         // A lógica será: buscar o usuário, chamar user.softDelete(), e depois userRepo.save(user).
         this.jpaRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<User> findAll(Pageable pageable) {
+        return this.jpaRepository.findAll(pageable).map(this::toEntity);
     }
 
     private User toEntity(UserModel model) {

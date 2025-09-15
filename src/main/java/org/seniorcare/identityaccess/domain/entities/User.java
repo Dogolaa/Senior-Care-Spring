@@ -89,12 +89,34 @@ public class User {
         this.updatedAt = Instant.now();
     }
 
-    public void updateProfile(String newName, String newPhone) {
+//    public void updateProfile(String newName, String newPhone) {
+//        if (newName == null || newName.trim().isEmpty()) {
+//            throw new IllegalArgumentException("User name cannot be empty.");
+//        }
+//        this.name = newName;
+//        this.phone = newPhone;
+//        this.updatedAt = Instant.now();
+//    }
+
+
+    public void update(String newName, String newEmail, String newPhone, UUID newAddressId, UUID newRoleId) {
+
         if (newName == null || newName.trim().isEmpty()) {
             throw new IllegalArgumentException("User name cannot be empty.");
         }
+        if (newEmail == null || !newEmail.contains("@")) {
+            throw new IllegalArgumentException("A valid email is required.");
+        }
+        if (newRoleId == null) {
+            throw new IllegalArgumentException("User must have a role.");
+        }
+
         this.name = newName;
+        this.email = newEmail;
         this.phone = newPhone;
+        this.addressId = newAddressId;
+        this.roleId = newRoleId;
+
         this.updatedAt = Instant.now();
     }
 
