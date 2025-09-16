@@ -1,6 +1,6 @@
-package org.seniorcare.identityaccess.application.commands.handlers;
+package org.seniorcare.identityaccess.application.commands.handlers.user;
 
-import org.seniorcare.identityaccess.application.commands.impl.CreateUserCommand;
+import org.seniorcare.identityaccess.application.commands.impl.user.CreateUserCommand;
 import org.seniorcare.identityaccess.domain.entities.User;
 import org.seniorcare.identityaccess.domain.repositories.IUserRepository;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package org.seniorcare.identityaccess.infrastructure.persistence.jpa.repositories;
+package org.seniorcare.identityaccess.infrastructure.persistence.jpa.repositories.user;
 
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;

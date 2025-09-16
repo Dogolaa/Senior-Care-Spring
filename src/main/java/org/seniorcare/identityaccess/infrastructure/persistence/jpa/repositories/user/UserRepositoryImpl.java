@@ -1,4 +1,4 @@
-package org.seniorcare.identityaccess.infrastructure.persistence.jpa.repositories;
+package org.seniorcare.identityaccess.infrastructure.persistence.jpa.repositories.user;
 
 import org.seniorcare.identityaccess.domain.entities.User;
 import org.seniorcare.identityaccess.domain.repositories.IUserRepository;
@@ -38,21 +38,12 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    public void deleteById(UUID id) {
-        // Para Soft Delete, este método não deve ser usado diretamente.
-        // A lógica será: buscar o usuário, chamar user.softDelete(), e depois userRepo.save(user).
-        this.jpaRepository.deleteById(id);
-    }
-
-    @Override
     public Page<User> findAll(Pageable pageable) {
         return this.jpaRepository.findAll(pageable).map(this::toEntity);
     }
 
     private User toEntity(UserModel model) {
         if (model == null) return null;
-
-
         return new User(
                 model.getId(),
                 model.getName(),

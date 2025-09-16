@@ -22,5 +22,4 @@ public interface IUserRepository {
     Page<User> findAll(Pageable pageable);
 
 
-    void deleteById(UUID id);
 }

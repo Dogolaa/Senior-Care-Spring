@@ -1,4 +1,4 @@
-package org.seniorcare.identityaccess.application.commands.impl;
+package org.seniorcare.identityaccess.application.commands.impl.user;
 
 import java.util.UUID;
 
