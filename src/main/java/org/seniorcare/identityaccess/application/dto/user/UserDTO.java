@@ -1,4 +1,4 @@
-package org.seniorcare.identityaccess.application.dto;
+package org.seniorcare.identityaccess.application.dto.user;
 
 import org.springframework.hateoas.RepresentationModel;
 

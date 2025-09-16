@@ -1,7 +1,7 @@
-package org.seniorcare.identityaccess.application.queries.handlers;
+package org.seniorcare.identityaccess.application.queries.handlers.user;
 
-import org.seniorcare.identityaccess.application.dto.UserDTO;
-import org.seniorcare.identityaccess.application.queries.impl.FindUserByIdQuery;
+import org.seniorcare.identityaccess.application.dto.user.UserDTO;
+import org.seniorcare.identityaccess.application.queries.impl.user.FindUserByIdQuery;
 import org.seniorcare.identityaccess.domain.entities.User;
 import org.seniorcare.identityaccess.domain.repositories.IUserRepository;
 import org.springframework.stereotype.Service;

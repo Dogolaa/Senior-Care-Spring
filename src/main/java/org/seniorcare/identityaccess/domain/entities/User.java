@@ -49,69 +49,6 @@ public class User {
         this.deletedAt = deletedAt;
     }
 
-    public static User create(String name, String email, String phone, UUID addressId, String plainTextPassword, UUID roleId) {
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("User name cannot be empty.");
-        }
-        if (email == null || !email.contains("@")) {
-            throw new IllegalArgumentException("A valid email is required.");
-        }
-        if (plainTextPassword == null || plainTextPassword.length() < 8) {
-            throw new IllegalArgumentException("Password must be at least 8 characters long.");
-        }
-        if (roleId == null) {
-            throw new IllegalArgumentException("User must have a role.");
-        }
-
-        return new User(UUID.randomUUID(), name, email, phone, addressId, plainTextPassword, roleId);
-    }
-
-
-    public void activate() {
-        if (this.isActive) {
-            throw new IllegalStateException("User is already active.");
-        }
-        this.isActive = true;
-    }
-
-    public void changePassword(String newPlainTextPassword) {
-        if (newPlainTextPassword == null || newPlainTextPassword.length() < 8) {
-            throw new IllegalArgumentException("New password must be at least 8 characters long.");
-        }
-        this.password = newPlainTextPassword;
-        this.updatedAt = Instant.now();
-    }
-
-    public void update(String newName, String newEmail, String newPhone, Boolean isActive, UUID newAddressId, UUID newRoleId) {
-
-        if (newName == null || newName.trim().isEmpty()) {
-            throw new IllegalArgumentException("User name cannot be empty.");
-        }
-        if (newEmail == null || !newEmail.contains("@")) {
-            throw new IllegalArgumentException("A valid email is required.");
-        }
-        if (newRoleId == null) {
-            throw new IllegalArgumentException("User must have a role.");
-        }
-
-        this.name = newName;
-        this.email = newEmail;
-        this.phone = newPhone;
-        this.isActive = isActive;
-        this.addressId = newAddressId;
-        this.roleId = newRoleId;
-
-        this.updatedAt = Instant.now();
-    }
-
-    public void softDelete() {
-        if (this.deletedAt != null) {
-            throw new IllegalStateException("User is already deleted.");
-        }
-        this.deletedAt = Instant.now();
-        this.updatedAt = Instant.now();
-    }
-
     public Instant getCreatedAt() {
         return createdAt;
     }
@@ -154,5 +91,62 @@ public class User {
 
     public UUID getRoleId() {
         return roleId;
+    }
+
+
+    public static User create(String name, String email, String phone, UUID addressId, String plainTextPassword, UUID roleId) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("User name cannot be empty.");
+        }
+        if (email == null || !email.contains("@")) {
+            throw new IllegalArgumentException("A valid email is required.");
+        }
+        if (plainTextPassword == null || plainTextPassword.length() < 8) {
+            throw new IllegalArgumentException("Password must be at least 8 characters long.");
+        }
+        if (roleId == null) {
+            throw new IllegalArgumentException("User must have a role.");
+        }
+
+        return new User(UUID.randomUUID(), name, email, phone, addressId, plainTextPassword, roleId);
+    }
+
+
+    public void changePassword(String newPlainTextPassword) {
+        if (newPlainTextPassword == null || newPlainTextPassword.length() < 8) {
+            throw new IllegalArgumentException("New password must be at least 8 characters long.");
+        }
+        this.password = newPlainTextPassword;
+        this.updatedAt = Instant.now();
+    }
+
+    public void update(String newName, String newEmail, String newPhone, Boolean isActive, UUID newAddressId, UUID newRoleId) {
+
+        if (newName == null || newName.trim().isEmpty()) {
+            throw new IllegalArgumentException("User name cannot be empty.");
+        }
+        if (newEmail == null || !newEmail.contains("@")) {
+            throw new IllegalArgumentException("A valid email is required.");
+        }
+        if (newRoleId == null) {
+            throw new IllegalArgumentException("User must have a role.");
+        }
+
+        this.name = newName;
+        this.email = newEmail;
+        this.phone = newPhone;
+        this.isActive = isActive;
+        this.addressId = newAddressId;
+        this.roleId = newRoleId;
+
+        this.updatedAt = Instant.now();
+    }
+
+    public void softDelete() {
+        if (this.deletedAt != null) {
+            throw new IllegalStateException("User is already deleted.");
+        }
+        this.deletedAt = Instant.now();
+        this.updatedAt = Instant.now();
     }
 }
