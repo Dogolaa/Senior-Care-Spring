@@ -35,7 +35,6 @@ public class UpdateUserCommandHandler {
                 command.name(),
                 command.email(),
                 command.phone(),
-                command.isActive(),
                 command.addressId(),
                 command.roleId()
         );

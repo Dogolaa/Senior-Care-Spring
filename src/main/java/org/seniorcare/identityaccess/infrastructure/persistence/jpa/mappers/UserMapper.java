@@ -1,12 +1,17 @@
 package org.seniorcare.identityaccess.infrastructure.persistence.jpa.mappers;
 
 import org.seniorcare.identityaccess.domain.entities.User;
+import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.RoleModel;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.UserModel;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class UserMapper {
 
-    public static UserModel toModel(User entity) {
+    public UserMapper() {
+    }
+
+    public UserModel toModel(User entity, RoleModel roleModel) {
         if (entity == null) return null;
 
         UserModel model = new UserModel();
@@ -17,23 +22,27 @@ public class UserMapper {
         model.setActive(entity.isActive());
         model.setAddressId(entity.getAddressId());
         model.setPassword(entity.getPassword());
-        model.setRoleId(entity.getRoleId());
+        model.setRole(roleModel);
+        model.setDeletedAt(entity.getDeletedAt());
+
         return model;
     }
 
-    public static User toEntity(UserModel model) {
+    public User toEntity(UserModel model) {
         if (model == null) return null;
-        
-        try {
-            var constructor = User.class.getDeclaredConstructor(
-                    java.util.UUID.class, String.class, String.class, String.class,
-                    boolean.class, java.util.UUID.class, String.class, java.util.UUID.class
-            );
-            constructor.setAccessible(true);
 
-            return null;
-        } catch (Exception e) {
-            throw new RuntimeException("Could not map model to entity", e);
-        }
+        return new User(
+                model.getId(),
+                model.getName(),
+                model.getEmail(),
+                model.getPhone(),
+                model.isActive(),
+                model.getAddressId(),
+                model.getPassword(),
+                model.getRole() != null ? model.getRole().getId() : null,
+                model.getCreatedAt(),
+                model.getUpdatedAt(),
+                model.getDeletedAt()
+        );
     }
 }

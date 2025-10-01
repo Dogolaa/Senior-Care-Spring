@@ -120,7 +120,7 @@ public class User {
         this.updatedAt = Instant.now();
     }
 
-    public void update(String newName, String newEmail, String newPhone, Boolean isActive, UUID newAddressId, UUID newRoleId) {
+    public void update(String newName, String newEmail, String newPhone, UUID newAddressId, UUID newRoleId) {
 
         if (newName == null || newName.trim().isEmpty()) {
             throw new IllegalArgumentException("User name cannot be empty.");
@@ -135,7 +135,6 @@ public class User {
         this.name = newName;
         this.email = newEmail;
         this.phone = newPhone;
-        this.isActive = isActive;
         this.addressId = newAddressId;
         this.roleId = newRoleId;
 

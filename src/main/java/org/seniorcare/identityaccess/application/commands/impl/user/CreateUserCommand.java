@@ -7,7 +7,6 @@ public record CreateUserCommand(
         String email,
         String phone,
         UUID addressId,
-        String plainTextPassword,
-        UUID roleId) {
+        String plainTextPassword) {
 }
 
