@@ -23,10 +23,19 @@ public class FindAddressByIdQueryHandler {
         return addressRepository.findById(query.id())
                 .map(this::toDTO);
     }
-    
+
     private AddressDTO toDTO(Address address) {
         return new AddressDTO(
-                address.getId()
+                address.getId(),
+                address.getCep(),
+                address.getCountry(),
+                address.getState(),
+                address.getCity(),
+                address.getDistrict(),
+                address.getStreet(),
+                address.getNumber(),
+                address.getComplement()
+
         );
     }
 }
