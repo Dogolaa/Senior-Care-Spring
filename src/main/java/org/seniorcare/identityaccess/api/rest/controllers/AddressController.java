@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -28,15 +29,21 @@ public class AddressController {
         this.createHandler = createHandler;
     }
 
-    @Operation(summary = "Cria um novo endereço")
+    @Operation(summary = "Cria um novo endereço e retorna seu ID")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Endereço criado com sucesso"), @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos")})
     @PostMapping
-    public ResponseEntity<Void> createAddress(@RequestBody CreateAddressRequest request) {
+
+    public ResponseEntity<Map<String, UUID>> createAddress(@RequestBody CreateAddressRequest request) {
         var command = new CreateAddressCommand(request.cep(), request.country(), request.state(), request.city(), request.district()
                 , request.street(), request.number(), request.complement());
+
         final UUID newAddressId = createHandler.handle(command);
+
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newAddressId).toUri();
-        return ResponseEntity.created(location).build();
+
+        Map<String, UUID> responseBody = Map.of("id", newAddressId);
+
+        return ResponseEntity.created(location).body(responseBody);
     }
 }
