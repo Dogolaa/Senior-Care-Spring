@@ -7,7 +7,6 @@ public record UpdateUserCommand(
         String name,
         String email,
         String phone,
-        Boolean isActive,
         UUID addressId,
         UUID roleId) {
 }

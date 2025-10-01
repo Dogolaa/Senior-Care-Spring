@@ -7,7 +7,6 @@ public record CreateUserRequest(
         String email,
         String phone,
         UUID addressId,
-        String password,
-        UUID roleId
+        String password
 ) {
 }
