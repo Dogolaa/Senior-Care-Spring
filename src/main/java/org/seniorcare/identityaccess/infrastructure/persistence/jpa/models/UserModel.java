@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 public class UserModel extends Auditable implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "name", nullable = false)

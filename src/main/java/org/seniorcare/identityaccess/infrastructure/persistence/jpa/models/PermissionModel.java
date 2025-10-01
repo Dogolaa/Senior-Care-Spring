@@ -1,6 +1,9 @@
 package org.seniorcare.identityaccess.infrastructure.persistence.jpa.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.seniorcare.shared.infrastructure.persistence.Auditable;
 
 import java.util.Objects;
@@ -11,7 +14,6 @@ import java.util.UUID;
 public class PermissionModel extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false, unique = true)

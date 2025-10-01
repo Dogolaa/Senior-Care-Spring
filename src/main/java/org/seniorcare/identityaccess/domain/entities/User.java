@@ -1,5 +1,6 @@
 package org.seniorcare.identityaccess.domain.entities;
 
+import org.seniorcare.identityaccess.domain.vo.Email;
 import org.seniorcare.shared.exceptions.BadRequestException;
 
 import java.time.Instant;
@@ -9,7 +10,7 @@ public class User {
 
     private final UUID id;
     private String name;
-    private String email;
+    private Email email;
     private String phone;
     private Boolean isActive;
     private UUID addressId;
@@ -22,7 +23,7 @@ public class User {
     // TODO: [DDD] Refatorar 'email' para um Value Object 'Email' com validação de formato.
     // TODO: [SECURITY] Refatorar 'password' para um Value Object 'Password' com hashing do Spring Security.
 
-    private User(UUID id, String name, String email, String phone, UUID addressId, String password, UUID roleId) {
+    private User(UUID id, String name, Email email, String phone, UUID addressId, String password, UUID roleId) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -37,7 +38,7 @@ public class User {
         this.deletedAt = null;
     }
 
-    public User(UUID id, String name, String email, String phone, Boolean isActive, UUID addressId, String password, UUID roleId, Instant createdAt, Instant updatedAt, Instant deletedAt) {
+    public User(UUID id, String name, Email email, String phone, Boolean isActive, UUID addressId, String password, UUID roleId, Instant createdAt, Instant updatedAt, Instant deletedAt) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -71,7 +72,7 @@ public class User {
         return name;
     }
 
-    public String getEmail() {
+    public Email getEmail() {
         return email;
     }
 
@@ -100,9 +101,6 @@ public class User {
         if (name == null || name.trim().isEmpty()) {
             throw new BadRequestException("User name cannot be empty.");
         }
-        if (email == null || !email.contains("@")) {
-            throw new IllegalArgumentException("A valid email is required.");
-        }
         if (plainTextPassword == null || plainTextPassword.length() < 8) {
             throw new IllegalArgumentException("Password must be at least 8 characters long.");
         }
@@ -110,7 +108,9 @@ public class User {
             throw new IllegalArgumentException("User must have a role.");
         }
 
-        return new User(UUID.randomUUID(), name, email, phone, addressId, plainTextPassword, roleId);
+        Email validEmail = new Email(email);
+
+        return new User(UUID.randomUUID(), name, validEmail, phone, addressId, plainTextPassword, roleId);
     }
 
 
@@ -127,15 +127,12 @@ public class User {
         if (newName == null || newName.trim().isEmpty()) {
             throw new IllegalArgumentException("User name cannot be empty.");
         }
-        if (newEmail == null || !newEmail.contains("@")) {
-            throw new IllegalArgumentException("A valid email is required.");
-        }
         if (newRoleId == null) {
             throw new IllegalArgumentException("User must have a role.");
         }
 
         this.name = newName;
-        this.email = newEmail;
+        this.email = new Email(newEmail);
         this.phone = newPhone;
         this.addressId = newAddressId;
         this.roleId = newRoleId;

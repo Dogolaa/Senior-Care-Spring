@@ -1,6 +1,7 @@
 package org.seniorcare.identityaccess.infrastructure.persistence.jpa.mappers;
 
 import org.seniorcare.identityaccess.domain.entities.User;
+import org.seniorcare.identityaccess.domain.vo.Email;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.RoleModel;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.UserModel;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ public class UserMapper {
         UserModel model = new UserModel();
         model.setId(entity.getId());
         model.setName(entity.getName());
-        model.setEmail(entity.getEmail());
+        model.setEmail(entity.getEmail().value());
         model.setPhone(entity.getPhone());
         model.setActive(entity.isActive());
         model.setAddressId(entity.getAddressId());
@@ -34,7 +35,7 @@ public class UserMapper {
         return new User(
                 model.getId(),
                 model.getName(),
-                model.getEmail(),
+                new Email(model.getEmail()),
                 model.getPhone(),
                 model.isActive(),
                 model.getAddressId(),

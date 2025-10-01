@@ -16,7 +16,6 @@ import java.util.UUID;
 public class AddressModel extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "cep", nullable = false)

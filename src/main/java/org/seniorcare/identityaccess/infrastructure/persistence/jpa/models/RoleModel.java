@@ -14,7 +14,6 @@ import java.util.UUID;
 public class RoleModel extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false, unique = true)
