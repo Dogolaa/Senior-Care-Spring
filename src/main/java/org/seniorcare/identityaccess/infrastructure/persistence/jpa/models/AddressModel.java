@@ -2,18 +2,18 @@ package org.seniorcare.identityaccess.infrastructure.persistence.jpa.models;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.SQLRestriction;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.seniorcare.shared.infrastructure.persistence.Auditable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Table(name = "address")
 @EntityListeners(AuditingEntityListener.class)
 @SQLRestriction("deleted_at IS NULL")
-public class AddressModel {
+public class AddressModel extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -42,14 +42,6 @@ public class AddressModel {
 
     @Column(name = "complement", nullable = true)
     private String complement;
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at", nullable = false)
-    private Instant updatedAt;
 
     @Column(name = "deleted_at")
     private Instant deletedAt;
@@ -129,27 +121,22 @@ public class AddressModel {
         this.complement = complement;
     }
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public Instant getDeletedAt() {
         return deletedAt;
     }
 
     public void setDeletedAt(Instant deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof AddressModel that)) return false;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getCep(), that.getCep()) && Objects.equals(getCountry(), that.getCountry()) && Objects.equals(getState(), that.getState()) && Objects.equals(getCity(), that.getCity()) && Objects.equals(getDistrict(), that.getDistrict()) && Objects.equals(getStreet(), that.getStreet()) && Objects.equals(getNumber(), that.getNumber()) && Objects.equals(getComplement(), that.getComplement()) && Objects.equals(getDeletedAt(), that.getDeletedAt());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getCep(), getCountry(), getState(), getCity(), getDistrict(), getStreet(), getNumber(), getComplement(), getDeletedAt());
     }
 }

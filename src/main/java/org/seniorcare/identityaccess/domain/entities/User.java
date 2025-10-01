@@ -1,5 +1,7 @@
 package org.seniorcare.identityaccess.domain.entities;
 
+import org.seniorcare.shared.exceptions.BadRequestException;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -96,7 +98,7 @@ public class User {
 
     public static User create(String name, String email, String phone, UUID addressId, String plainTextPassword, UUID roleId) {
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("User name cannot be empty.");
+            throw new BadRequestException("User name cannot be empty.");
         }
         if (email == null || !email.contains("@")) {
             throw new IllegalArgumentException("A valid email is required.");

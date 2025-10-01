@@ -1,5 +1,7 @@
 package org.seniorcare.identityaccess.domain.entities;
 
+import org.seniorcare.shared.exceptions.BadRequestException;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -144,25 +146,25 @@ public class Address {
 
     public static Address create(String cep, String country, String state, String city, String district, String street, Integer number, String complement) {
         if (cep == null || cep.trim().isEmpty()) {
-            throw new IllegalArgumentException("Address CEP cannot be empty.");
+            throw new BadRequestException("Address CEP cannot be empty.");
         }
         if (country == null || country.trim().isEmpty()) {
-            throw new IllegalArgumentException("Address Country cannot be empty.");
+            throw new BadRequestException("Address Country cannot be empty.");
         }
         if (state == null || state.trim().isEmpty()) {
-            throw new IllegalArgumentException("Address State cannot be empty.");
+            throw new BadRequestException("Address State cannot be empty.");
         }
         if (city == null || city.trim().isEmpty()) {
-            throw new IllegalArgumentException("Address City cannot be empty.");
+            throw new BadRequestException("Address City cannot be empty.");
         }
         if (district == null || district.trim().isEmpty()) {
-            throw new IllegalArgumentException("Address District cannot be empty.");
+            throw new BadRequestException("Address District cannot be empty.");
         }
         if (street == null || street.trim().isEmpty()) {
-            throw new IllegalArgumentException("Address Street cannot be empty.");
+            throw new BadRequestException("Address Street cannot be empty.");
         }
         if (number == null) {
-            throw new IllegalArgumentException("Address Number cannot be empty.");
+            throw new BadRequestException("Address Number cannot be empty.");
         }
 
         return new Address(UUID.randomUUID(), cep, country, state, city, district, state, number, complement);
