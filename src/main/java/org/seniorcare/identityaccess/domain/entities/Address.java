@@ -167,6 +167,6 @@ public class Address {
             throw new BadRequestException("Address Number cannot be empty.");
         }
 
-        return new Address(UUID.randomUUID(), cep, country, state, city, district, state, number, complement);
+        return new Address(UUID.randomUUID(), cep, country, state, city, district, street, number, complement);
     }
 }

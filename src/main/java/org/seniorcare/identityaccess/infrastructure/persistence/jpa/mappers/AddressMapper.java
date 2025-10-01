@@ -10,7 +10,7 @@ public class AddressMapper {
     public AddressMapper() {
     }
 
-    public AddressModel toModel(Address entity, AddressModel addressModel) {
+    public AddressModel toModel(Address entity) {
         if (entity == null) return null;
 
         AddressModel model = new AddressModel();

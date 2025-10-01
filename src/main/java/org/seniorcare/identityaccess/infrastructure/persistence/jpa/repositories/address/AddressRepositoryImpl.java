@@ -26,19 +26,17 @@ public class AddressRepositoryImpl implements IAddressRepository {
 
     @Override
     public void save(Address address) {
-        AddressModel addressModel = mapper.toModel(address, new AddressModel());
+        AddressModel addressModel = mapper.toModel(address);
         this.jpaRepository.save(addressModel);
     }
 
     @Override
     public Optional<Address> findById(UUID id) {
-        return Optional.empty();
+        return this.jpaRepository.findById(id).map(mapper::toEntity);
     }
 
     @Override
     public Page<Address> findAll(Pageable pageable) {
-        return null;
+        return this.jpaRepository.findAll(pageable).map(mapper::toEntity);
     }
-
-
 }

@@ -27,7 +27,7 @@ public class FindAllUsersQueryHandler {
         return new UserDTO(
                 user.getId(),
                 user.getName(),
-                user.getEmail(),
+                user.getEmail().value(),
                 user.getPhone(),
                 user.isActive(),
                 user.getCreatedAt(),
