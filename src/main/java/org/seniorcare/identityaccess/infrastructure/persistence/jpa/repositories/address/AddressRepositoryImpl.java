@@ -5,8 +5,6 @@ import org.seniorcare.identityaccess.domain.repositories.IAddressRepository;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.mappers.AddressMapper;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.AddressModel;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -35,8 +33,4 @@ public class AddressRepositoryImpl implements IAddressRepository {
         return this.jpaRepository.findById(id).map(mapper::toEntity);
     }
 
-    @Override
-    public Page<Address> findAll(Pageable pageable) {
-        return this.jpaRepository.findAll(pageable).map(mapper::toEntity);
-    }
 }

@@ -1,6 +1,7 @@
 package org.seniorcare.identityaccess.domain.entities;
 
 import org.seniorcare.shared.exceptions.BadRequestException;
+import org.seniorcare.shared.exceptions.ResourceNotFoundException;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -168,5 +169,27 @@ public class Address {
         }
 
         return new Address(UUID.randomUUID(), cep, country, state, city, district, street, number, complement);
+    }
+
+    public void update(String newCep, String newCountry, String newState, String newCity,
+                       String newDistrict, String newStreet, Integer newNumber, String newComplement) {
+
+        this.cep = newCep;
+        this.country = newCountry;
+        this.state = newState;
+        this.city = newCity;
+        this.district = newDistrict;
+        this.street = newStreet;
+        this.number = newNumber;
+        this.complement = newComplement;
+        this.updatedAt = Instant.now();
+    }
+
+    public void softDelete() {
+        if (this.deletedAt != null) {
+            throw new ResourceNotFoundException("Address is already deleted.");
+        }
+        this.deletedAt = Instant.now();
+        this.updatedAt = Instant.now();
     }
 }
