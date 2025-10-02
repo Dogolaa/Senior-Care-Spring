@@ -2,6 +2,7 @@ package org.seniorcare.identityaccess.domain.entities;
 
 import org.seniorcare.identityaccess.domain.vo.Email;
 import org.seniorcare.shared.exceptions.BadRequestException;
+import org.seniorcare.shared.exceptions.ResourceNotFoundException;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -125,10 +126,10 @@ public class User {
     public void update(String newName, String newEmail, String newPhone, UUID newAddressId, UUID newRoleId) {
 
         if (newName == null || newName.trim().isEmpty()) {
-            throw new IllegalArgumentException("User name cannot be empty.");
+            throw new BadRequestException("User name cannot be empty.");
         }
         if (newRoleId == null) {
-            throw new IllegalArgumentException("User must have a role.");
+            throw new BadRequestException("User must have a role.");
         }
 
         this.name = newName;
@@ -142,7 +143,7 @@ public class User {
 
     public void softDelete() {
         if (this.deletedAt != null) {
-            throw new IllegalStateException("User is already deleted.");
+            throw new ResourceNotFoundException("User is already deleted.");
         }
         this.deletedAt = Instant.now();
         this.updatedAt = Instant.now();
