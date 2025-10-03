@@ -12,6 +12,15 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  redis:
+    image: redis:7-alpine
+    container_name: seniorCare_redis
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+
   app:
     build:
       context: .
@@ -19,13 +28,14 @@ services:
     restart: always
     depends_on:
       - db
+      - redis
     ports:
-      - '8080:8080' # <- ALTERADO: Spring usa a porta 8080 por padrão
+      - '8080:8080'
     environment:
-      # Passamos o perfil 'docker' para a aplicação Spring.
-      # Isso fará com que ela use as configurações de banco de dados para o container.
       SPRING_PROFILES_ACTIVE: docker
 
 volumes:
   pgdata:
-    driver: local # Boa prática especificar o driver do volume
+    driver: local
+  redis_data:
+    driver: local

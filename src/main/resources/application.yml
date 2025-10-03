@@ -1,45 +1,37 @@
-# Configurações do Servidor
 server:
-  port: 8080 # Porta padrão da aplicação
+  port: 8080
 
-# Configurações Gerais do Spring
 spring:
-  # Configuração da fonte de dados (DataSource)
   datasource:
-    # URL de conexão JDBC. Note o host 'db', que é o nome do serviço no docker-compose.
-    # Esta é a configuração para comunicação DENTRO da rede Docker.
     url: jdbc:postgresql://db:5432/SeniorCare
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
-
-  # Configuração do JPA (Hibernate)
   jpa:
     hibernate:
-      # O Flyway vai cuidar do schema. 'validate' garante que as entidades estão em sincronia com o schema.
       ddl-auto: validate
-    show-sql: true # Mostra os SQLs gerados no console, ótimo para debug
+    show-sql: true
     properties:
       hibernate:
-        format_sql: true # Formata o SQL logado para melhor leitura
-
-  # Configuração do Flyway para versionamento de banco de dados
+        format_sql: true
   flyway:
-    # O Flyway usará o mesmo datasource configurado acima por padrão.
-    # Os scripts de migração devem ser colocados em 'src/main/resources/db/migration'
-    # Ex: V1__Create_User_Table.sql
     baseline-on-migrate: true
     placeholder-replacement: false
+  cache:
+    type: redis
+  data:
+    redis:
+      host: redis
+      port: 6379
 
 ---
-# --- PERFIL PARA DESENVOLVIMENTO LOCAL ---
-# Estas configurações serão ativadas apenas quando o perfil 'local' estiver ativo.
-# Ex: Rodando a aplicação pela sua IDE com o argumento -Dspring.profiles.active=local
 spring:
   config:
     activate:
       on-profile: local
-  # Sobrescrevemos a configuração do datasource para o ambiente local
   datasource:
-    # Para rodar localmente, conectamos em 'localhost' na porta que expomos (5434).
     url: jdbc:postgresql://localhost:5435/SeniorCare
+  data:
+    redis:
+      host: localhost
+      port: 6379

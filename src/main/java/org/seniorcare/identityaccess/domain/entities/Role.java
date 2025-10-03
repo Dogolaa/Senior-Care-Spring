@@ -1,5 +1,8 @@
 package org.seniorcare.identityaccess.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -23,7 +26,10 @@ public class Role {
         return new Role(UUID.randomUUID(), name.toUpperCase());
     }
 
-    public Role(UUID id, String name, Set<Permission> permissions) {
+    @JsonCreator
+    public Role(@JsonProperty("id") UUID id,
+                @JsonProperty("name") String name,
+                @JsonProperty("permissions") Set<Permission> permissions) {
         this.id = id;
         this.name = name;
         this.permissions = permissions;

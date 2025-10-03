@@ -1,5 +1,8 @@
 package org.seniorcare.identityaccess.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.UUID;
 
 public class Permission {
@@ -8,7 +11,8 @@ public class Permission {
     private String name;
 
 
-    public Permission(UUID id, String name) {
+    @JsonCreator
+    public Permission(@JsonProperty("id") UUID id, @JsonProperty("name") String name) {
         this.id = id;
         this.name = name;
     }
