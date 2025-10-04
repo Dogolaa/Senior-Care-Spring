@@ -25,8 +25,7 @@ front-end (Web e Mobile).
 
 A arquitetura deste projeto foi cuidadosamente escolhida para gerenciar a complexidade do domínio de negócio e garantir
 escalabilidade e manutenibilidade. A aplicação é um **Monolito Modular** que segue os princípios da **Arquitetura
-Limpa (Clean Architecture)** e da **Arquitetura Hexagonal**, utilizando os padrões **DDD (Domain-Driven Design)** e *
-*CQRS**.
+Limpa (Clean Architecture)** e da **Arquitetura Hexagonal**, utilizando os padrões **DDD (Domain-Driven Design)** e **CQRS**.
 
 ### Monolito Modular
 
