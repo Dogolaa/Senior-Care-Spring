@@ -148,4 +148,12 @@ public class User {
         this.deletedAt = Instant.now();
         this.updatedAt = Instant.now();
     }
+
+    public void changeRole(UUID newRoleId) {
+        if (newRoleId == null) {
+            throw new BadRequestException("Role ID cannot be null.");
+        }
+        this.roleId = newRoleId;
+        this.updatedAt = Instant.now();
+    }
 }
