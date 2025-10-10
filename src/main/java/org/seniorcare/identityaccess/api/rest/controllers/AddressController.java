@@ -48,7 +48,6 @@ public class AddressController {
     @Operation(summary = "Cria um novo endereço e retorna seu ID")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Endereço criado com sucesso"), @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos")})
     @PostMapping
-
     public ResponseEntity<Map<String, UUID>> createAddress(@RequestBody CreateAddressRequest request) {
         var command = new CreateAddressCommand(request.cep(), request.country(), request.state(), request.city(), request.district()
                 , request.street(), request.number(), request.complement());
