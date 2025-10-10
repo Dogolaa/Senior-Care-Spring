@@ -4,16 +4,24 @@ import org.seniorcare.identityaccess.domain.entities.User;
 import org.seniorcare.identityaccess.domain.vo.Email;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.RoleModel;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.UserModel;
+import org.seniorcare.identityaccess.infrastructure.persistence.jpa.repositories.role.SpringDataRoleRepository;
+import org.seniorcare.shared.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
 
-    public UserMapper() {
+    private final SpringDataRoleRepository roleRepository;
+
+    public UserMapper(SpringDataRoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
     }
 
-    public UserModel toModel(User entity, RoleModel roleModel) {
+    public UserModel toModel(User entity) {
         if (entity == null) return null;
+
+        RoleModel roleModel = roleRepository.findById(entity.getRoleId())
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + entity.getRoleId()));
 
         UserModel model = new UserModel();
         model.setId(entity.getId());

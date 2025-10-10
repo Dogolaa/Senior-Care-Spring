@@ -3,7 +3,6 @@ package org.seniorcare.identityaccess.infrastructure.persistence.jpa.repositorie
 import org.seniorcare.identityaccess.domain.entities.User;
 import org.seniorcare.identityaccess.domain.repositories.IUserRepository;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.mappers.UserMapper;
-import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.RoleModel;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.UserModel;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.repositories.role.SpringDataRoleRepository;
 import org.springframework.context.annotation.Primary;
@@ -11,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,10 +29,8 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public void save(User user) {
-        RoleModel roleModel = roleRepository.findById(user.getRoleId())
-                .orElseThrow(() -> new NoSuchElementException("Role not found for ID: " + user.getRoleId()));
 
-        UserModel userModel = userMapper.toModel(user, roleModel);
+        UserModel userModel = userMapper.toModel(user);
 
         jpaRepository.save(userModel);
     }
