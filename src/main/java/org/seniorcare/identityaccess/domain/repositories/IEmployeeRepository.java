@@ -11,4 +11,6 @@ public interface IEmployeeRepository {
 
     Optional<Employee> findByUserId(UUID userId);
 
+    Optional<Employee> findById(UUID employeeId);
+
 }

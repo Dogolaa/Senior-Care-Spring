@@ -27,13 +27,11 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
 
     @Override
     public void save(Employee employee) {
-        // 1. Pede à fábrica o mapper correto
-        var mapper = mapperFactory.getMapperFor(employee);
-
-        // 2. Usa o mapper específico para converter (sem saber qual é)
+        var mapper = mapperFactory.getMapper(employee);
+        @SuppressWarnings("unchecked")
         EmployeeModel employeeModel = mapper.toModel(employee);
 
-        // 3. Salva no banco
+
         this.jpaRepository.save(employeeModel);
     }
 
