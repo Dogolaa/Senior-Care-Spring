@@ -13,4 +13,6 @@ public interface IEmployeeRepository {
 
     Optional<Employee> findById(UUID employeeId);
 
+    Optional<Employee> findByUserIdIncludingDeleted(UUID userId);
+
 }

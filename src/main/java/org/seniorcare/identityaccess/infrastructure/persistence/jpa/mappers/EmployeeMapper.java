@@ -16,6 +16,8 @@ public class EmployeeMapper {
         this.userMapper = userMapper;
     }
 
+
+    // TODO: Isso aqui ta violando SOLID, talvez o trade-off valha a pena, analisar.
     public Employee toEntity(EmployeeModel model) {
         if (model == null) return null;
 
@@ -27,7 +29,8 @@ public class EmployeeMapper {
                     nurseModel.getAdmissionDate(),
                     nurseModel.getCoren(),
                     nurseModel.getSpecialization(),
-                    nurseModel.getShift()
+                    nurseModel.getShift(),
+                    nurseModel.getDeletedAt()
             );
         }
         // Adicionar 'else if (model instanceof DoctorModel)' aqui no futuro
