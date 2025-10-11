@@ -3,6 +3,7 @@ package org.seniorcare.identityaccess.infrastructure.persistence.jpa.models;
 import jakarta.persistence.*;
 import org.seniorcare.shared.infrastructure.persistence.Auditable;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -20,6 +21,9 @@ public abstract class EmployeeModel extends Auditable {
 
     @Column(name = "admission_date", nullable = false)
     private LocalDate admissionDate;
+
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
 
     public UUID getId() {
         return id;
@@ -43,5 +47,13 @@ public abstract class EmployeeModel extends Auditable {
 
     public void setAdmissionDate(LocalDate admissionDate) {
         this.admissionDate = admissionDate;
+    }
+
+    public Instant getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Instant deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

@@ -44,4 +44,10 @@ public class EmployeeRepositoryImpl implements IEmployeeRepository {
     public Optional<Employee> findById(UUID id) {
         return this.jpaRepository.findById(id).map(employeeMapper::toEntity);
     }
+
+    @Override
+    public Optional<Employee> findByUserIdIncludingDeleted(UUID userId) {
+        return this.jpaRepository.findByUserIdEvenIfDeleted(userId)
+                .map(employeeMapper::toEntity);
+    }
 }

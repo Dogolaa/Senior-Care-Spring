@@ -1,6 +1,7 @@
 package org.seniorcare.identityaccess.infrastructure.persistence.jpa.mappers;
 
 import org.seniorcare.identityaccess.domain.entities.Nurse;
+import org.seniorcare.identityaccess.domain.entities.User;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.NurseModel;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.UserModel;
 import org.springframework.stereotype.Component;
@@ -33,7 +34,24 @@ public class NurseMapper implements EmployeeSubtypeMapper<Nurse, NurseModel> {
         model.setCoren(entity.getCoren());
         model.setSpecialization(entity.getSpecialization());
         model.setShift(entity.getShift());
+        model.setDeletedAt(entity.getDeletedAt());
 
         return model;
+    }
+
+    public Nurse toEntity(NurseModel model) {
+        if (model == null) return null;
+
+        User user = userMapper.toEntity(model.getUser());
+
+        return new Nurse(
+                model.getId(),
+                user,
+                model.getAdmissionDate(),
+                model.getCoren(),
+                model.getSpecialization(),
+                model.getShift(),
+                model.getDeletedAt()
+        );
     }
 }

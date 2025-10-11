@@ -2,6 +2,7 @@ package org.seniorcare.identityaccess.domain.entities;
 
 import org.seniorcare.shared.exceptions.BadRequestException;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -23,8 +24,25 @@ public class Nurse extends Employee {
         return new Nurse(user, admissionDate, coren, specialization, shift);
     }
 
-    public Nurse(UUID id, User user, LocalDate admissionDate, String coren, String specialization, String shift) {
-        super(id, user, admissionDate);
+    public void updateDetails(String newCoren, String newSpecialization, String newShift) {
+        if (newCoren == null || newCoren.isBlank()) {
+            throw new BadRequestException("COREN cannot be empty during update.");
+        }
+        if (newSpecialization == null || newSpecialization.isBlank()) {
+            throw new BadRequestException("Specialization cannot be empty during update.");
+        }
+        if (newShift == null || newShift.isBlank()) {
+            throw new BadRequestException("Shift cannot be empty during update.");
+        }
+
+        this.coren = newCoren;
+        this.specialization = newSpecialization;
+        this.shift = newShift;
+        
+    }
+
+    public Nurse(UUID id, User user, LocalDate admissionDate, String coren, String specialization, String shift, Instant deletedAt) {
+        super(id, user, admissionDate, deletedAt);
         this.coren = coren;
         this.specialization = specialization;
         this.shift = shift;
