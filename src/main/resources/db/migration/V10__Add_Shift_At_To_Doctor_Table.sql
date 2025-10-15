@@ -1,0 +1,2 @@
+ALTER TABLE doctors
+    ADD COLUMN shift VARCHAR(255);

@@ -21,6 +21,6 @@ public class NurseRepositoryImpl implements INurseRepository {
     @Override
     public Optional<Nurse> findByCoren(String coren) {
         return jpaRepository.findByCoren(coren)
-                .map(nurseMapper::toEntity); // Lembre-se que o toEntity de Nurse pode precisar ser criado/ajustado
+                .map(nurseMapper::toEntity);
     }
 }
