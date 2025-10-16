@@ -60,4 +60,5 @@ public class Doctor extends Employee {
     public String getShift() {
         return shift;
     }
+
 }
