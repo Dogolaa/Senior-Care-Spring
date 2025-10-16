@@ -58,4 +58,12 @@ public abstract class Employee {
         }
         this.deletedAt = null;
     }
+
+    public void changeAdmissionDate(LocalDate newAdmissionDate) {
+        if (newAdmissionDate == null) {
+            throw new BadRequestException("Admission date cannot be null.");
+        }
+        this.admissionDate = newAdmissionDate;
+    }
+
 }
