@@ -2,7 +2,7 @@ package org.seniorcare.identityaccess.application.commands.impl.employee;
 
 import java.util.UUID;
 
-public record DemoteDoctorToUserCommand(
+public record DemoteEmployeeToUserCommand(
         UUID employeeId
 ) {
 }

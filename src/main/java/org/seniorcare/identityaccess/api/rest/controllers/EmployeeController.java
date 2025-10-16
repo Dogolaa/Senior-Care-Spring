@@ -8,8 +8,14 @@ import jakarta.validation.Valid;
 import org.seniorcare.identityaccess.api.rest.dto.employee.PromoteUserToDoctorRequest;
 import org.seniorcare.identityaccess.api.rest.dto.employee.PromoteUserToNurseRequest;
 import org.seniorcare.identityaccess.api.rest.dto.employee.UpdateEmployeeRequest;
-import org.seniorcare.identityaccess.application.commands.handlers.employee.*;
-import org.seniorcare.identityaccess.application.commands.impl.employee.*;
+import org.seniorcare.identityaccess.application.commands.handlers.employee.DemoteEmployeeToUserCommandHandler;
+import org.seniorcare.identityaccess.application.commands.handlers.employee.PromoteUserToDoctorCommandHandler;
+import org.seniorcare.identityaccess.application.commands.handlers.employee.PromoteUserToNurseCommandHandler;
+import org.seniorcare.identityaccess.application.commands.handlers.employee.UpdateEmployeeCommandHandler;
+import org.seniorcare.identityaccess.application.commands.impl.employee.DemoteEmployeeToUserCommand;
+import org.seniorcare.identityaccess.application.commands.impl.employee.PromoteUserToDoctorCommand;
+import org.seniorcare.identityaccess.application.commands.impl.employee.PromoteUserToNurseCommand;
+import org.seniorcare.identityaccess.application.commands.impl.employee.UpdateEmployeeCommand;
 import org.seniorcare.identityaccess.application.dto.employee.EmployeeDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,22 +28,19 @@ import java.util.UUID;
 public class EmployeeController {
 
     private final PromoteUserToNurseCommandHandler promoteUserToNurseHandler;
-    private final DemoteNurseToUserCommandHandler demoteNurseToUserHandler;
+    private final DemoteEmployeeToUserCommandHandler demoteEmployeeToUserHandler;
     private final PromoteUserToDoctorCommandHandler promoteUserToDoctorHandler;
-    private final DemoteDoctorToUserCommandHandler demoteDoctorToUserHandler;
     private final UpdateEmployeeCommandHandler updateEmployeeHandler;
 
     public EmployeeController(
             PromoteUserToNurseCommandHandler promoteUserToNurseHandler,
-            DemoteNurseToUserCommandHandler demoteNurseToUserHandler,
+            DemoteEmployeeToUserCommandHandler demoteEmployeeToUserHandler,
             PromoteUserToDoctorCommandHandler promoteUserToDoctorHandler,
-            DemoteDoctorToUserCommandHandler demoteDoctorToUserHandler,
             UpdateEmployeeCommandHandler updateEmployeeHandler
     ) {
         this.promoteUserToNurseHandler = promoteUserToNurseHandler;
-        this.demoteNurseToUserHandler = demoteNurseToUserHandler;
+        this.demoteEmployeeToUserHandler = demoteEmployeeToUserHandler;
         this.promoteUserToDoctorHandler = promoteUserToDoctorHandler;
-        this.demoteDoctorToUserHandler = demoteDoctorToUserHandler;
         this.updateEmployeeHandler = updateEmployeeHandler;
     }
 
@@ -84,15 +87,15 @@ public class EmployeeController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Rebaixa enfermeiro(a) para usuário(a) padrão")
+    @Operation(summary = "Rebaixa funcionário(a) para usuário(a) padrão")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Enfermeiro(a) rebaixado(a) com sucesso"),
+            @ApiResponse(responseCode = "204", description = "Funcionário(a) rebaixado(a) com sucesso"),
             @ApiResponse(responseCode = "404", description = "Funcionário(a) não encontrado(a)")
     })
-    @DeleteMapping("/nurses/{employeeId}")
-    public ResponseEntity<Void> demoteNurseToUser(@PathVariable UUID employeeId) {
-        var command = new DemoteNurseToUserCommand(employeeId);
-        demoteNurseToUserHandler.handle(command);
+    @DeleteMapping("/{employeeId}")
+    public ResponseEntity<Void> demoteEmployeeToUser(@PathVariable UUID employeeId) {
+        var command = new DemoteEmployeeToUserCommand(employeeId);
+        demoteEmployeeToUserHandler.handle(command);
         return ResponseEntity.noContent().build();
     }
 
@@ -112,17 +115,5 @@ public class EmployeeController {
         promoteUserToDoctorHandler.handle(command);
 
         return ResponseEntity.ok().build();
-    }
-
-    @Operation(summary = "Rebaixa médico(a) para usuário(a) padrão")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Médico(a) rebaixado(a) com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Funcionário(a) não encontrado(a)")
-    })
-    @DeleteMapping("/doctors/{employeeId}")
-    public ResponseEntity<Void> demoteDoctorToUser(@PathVariable UUID employeeId) {
-        var command = new DemoteDoctorToUserCommand(employeeId);
-        demoteDoctorToUserHandler.handle(command);
-        return ResponseEntity.noContent().build();
     }
 }

@@ -1,6 +1,6 @@
 package org.seniorcare.identityaccess.application.commands.handlers.employee;
 
-import org.seniorcare.identityaccess.application.commands.impl.employee.DemoteDoctorToUserCommand;
+import org.seniorcare.identityaccess.application.commands.impl.employee.DemoteEmployeeToUserCommand;
 import org.seniorcare.identityaccess.domain.entities.Employee;
 import org.seniorcare.identityaccess.domain.entities.Role;
 import org.seniorcare.identityaccess.domain.entities.User;
@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class DemoteDoctorToUserCommandHandler {
+public class DemoteEmployeeToUserCommandHandler {
 
     private final IUserRepository userRepository;
     private final IRoleRepository roleRepository;
     private final IEmployeeRepository employeeRepository;
 
-    public DemoteDoctorToUserCommandHandler(
+    public DemoteEmployeeToUserCommandHandler(
             IUserRepository userRepository,
             IRoleRepository roleRepository,
             IEmployeeRepository employeeRepository
@@ -29,7 +29,7 @@ public class DemoteDoctorToUserCommandHandler {
     }
 
     @Transactional
-    public void handle(DemoteDoctorToUserCommand command) {
+    public void handle(DemoteEmployeeToUserCommand command) {
         Employee employee = employeeRepository.findById(command.employeeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Employee to be demoted not found with id: " + command.employeeId()));
 
