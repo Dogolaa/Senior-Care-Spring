@@ -1,11 +1,9 @@
 package org.seniorcare.identityaccess.infrastructure.persistence.jpa.mappers;
 
-import org.seniorcare.identityaccess.domain.entities.Doctor;
-import org.seniorcare.identityaccess.domain.entities.Employee;
-import org.seniorcare.identityaccess.domain.entities.Nurse;
-import org.seniorcare.identityaccess.domain.entities.User;
+import org.seniorcare.identityaccess.domain.entities.*;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.DoctorModel;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.EmployeeModel;
+import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.ManagerModel;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.NurseModel;
 import org.springframework.stereotype.Component;
 
@@ -44,8 +42,17 @@ public class EmployeeMapper {
                     doctorModel.getShift(),
                     doctorModel.getDeletedAt()
             );
+        } else if (model instanceof ManagerModel managerModel) {
+            User user = userMapper.toEntity(managerModel.getUser());
+            return new Manager(
+                    managerModel.getId(),
+                    user,
+                    managerModel.getAdmissionDate(),
+                    managerModel.getDepartment(),
+                    managerModel.getShift(),
+                    managerModel.getDeletedAt()
+            );
         }
-
 
         throw new IllegalArgumentException("Unknown EmployeeModel subtype: " + model.getClass().getName());
     }

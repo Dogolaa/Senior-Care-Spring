@@ -5,9 +5,11 @@ import org.seniorcare.identityaccess.application.dto.employee.EmployeeDTO;
 import org.seniorcare.identityaccess.application.mappers.EmployeeDTOMapper;
 import org.seniorcare.identityaccess.domain.entities.Doctor;
 import org.seniorcare.identityaccess.domain.entities.Employee;
+import org.seniorcare.identityaccess.domain.entities.Manager;
 import org.seniorcare.identityaccess.domain.entities.Nurse;
 import org.seniorcare.identityaccess.domain.repositories.IDoctorRepository;
 import org.seniorcare.identityaccess.domain.repositories.IEmployeeRepository;
+import org.seniorcare.identityaccess.domain.repositories.IManagerRepository;
 import org.seniorcare.identityaccess.domain.repositories.INurseRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,16 +23,19 @@ public class UpdateEmployeeCommandHandler {
     private final IEmployeeRepository employeeRepository;
     private final IDoctorRepository doctorRepository;
     private final INurseRepository nurseRepository;
+    private final IManagerRepository managerRepository;
     private final EmployeeDTOMapper employeeDTOMapper;
 
     public UpdateEmployeeCommandHandler(
             IEmployeeRepository employeeRepository,
             IDoctorRepository doctorRepository,
             INurseRepository nurseRepository,
+            IManagerRepository managerRepository,
             EmployeeDTOMapper employeeDTOMapper) {
         this.employeeRepository = employeeRepository;
         this.doctorRepository = doctorRepository;
         this.nurseRepository = nurseRepository;
+        this.managerRepository = managerRepository;
         this.employeeDTOMapper = employeeDTOMapper;
     }
 
@@ -61,6 +66,11 @@ public class UpdateEmployeeCommandHandler {
                     command.specialization(),
                     command.shift()
             );
+        } else if (employeeToUpdate instanceof Manager manager) {
+            manager.updateDetails(
+                    command.department(),
+                    command.shift()
+            );
         } else {
             throw new UnsupportedOperationException("Operação de atualização não suportada para o tipo: " + employeeToUpdate.getClass().getSimpleName());
         }
@@ -84,5 +94,6 @@ public class UpdateEmployeeCommandHandler {
                 throw new IllegalStateException("COREN " + command.coren() + " já está em uso por outro funcionário.");
             }
         }
+        
     }
 }

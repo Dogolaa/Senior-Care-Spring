@@ -19,6 +19,25 @@ public class Doctor extends Employee {
         this.shift = shift;
     }
 
+    public Doctor(UUID id, User user, LocalDate admissionDate, String crm, String specialization, String shift, Instant deletedAt) {
+        super(id, user, admissionDate, deletedAt);
+        this.crm = crm;
+        this.specialization = specialization;
+        this.shift = shift;
+    }
+
+    public String getCrm() {
+        return crm;
+    }
+
+    public String getSpecialization() {
+        return specialization;
+    }
+
+    public String getShift() {
+        return shift;
+    }
+
     public static Doctor create(User user, LocalDate admissionDate, String crm, String specialization, String shift) {
         if (crm == null || crm.isBlank()) throw new BadRequestException("CRM is required for a Doctor.");
 
@@ -40,25 +59,6 @@ public class Doctor extends Employee {
         this.specialization = newSpecialization;
         this.shift = newShift;
 
-    }
-
-    public Doctor(UUID id, User user, LocalDate admissionDate, String crm, String specialization, String shift, Instant deletedAt) {
-        super(id, user, admissionDate, deletedAt);
-        this.crm = crm;
-        this.specialization = specialization;
-        this.shift = shift;
-    }
-
-    public String getCrm() {
-        return crm;
-    }
-
-    public String getSpecialization() {
-        return specialization;
-    }
-
-    public String getShift() {
-        return shift;
     }
 
 }

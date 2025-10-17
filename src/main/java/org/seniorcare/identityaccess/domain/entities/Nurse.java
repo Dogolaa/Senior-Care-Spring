@@ -18,6 +18,25 @@ public class Nurse extends Employee {
         this.shift = shift;
     }
 
+    public Nurse(UUID id, User user, LocalDate admissionDate, String coren, String specialization, String shift, Instant deletedAt) {
+        super(id, user, admissionDate, deletedAt);
+        this.coren = coren;
+        this.specialization = specialization;
+        this.shift = shift;
+    }
+
+    public String getCoren() {
+        return coren;
+    }
+
+    public String getSpecialization() {
+        return specialization;
+    }
+
+    public String getShift() {
+        return shift;
+    }
+
     public static Nurse create(User user, LocalDate admissionDate, String coren, String specialization, String shift) {
         if (coren == null || coren.isBlank()) throw new BadRequestException("COREN is required for a Nurse.");
 
@@ -38,25 +57,6 @@ public class Nurse extends Employee {
         this.coren = newCoren;
         this.specialization = newSpecialization;
         this.shift = newShift;
-        
-    }
 
-    public Nurse(UUID id, User user, LocalDate admissionDate, String coren, String specialization, String shift, Instant deletedAt) {
-        super(id, user, admissionDate, deletedAt);
-        this.coren = coren;
-        this.specialization = specialization;
-        this.shift = shift;
-    }
-
-    public String getCoren() {
-        return coren;
-    }
-
-    public String getSpecialization() {
-        return specialization;
-    }
-
-    public String getShift() {
-        return shift;
     }
 }
