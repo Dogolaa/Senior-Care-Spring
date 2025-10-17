@@ -9,6 +9,7 @@ public record UpdateEmployeeCommand(
         String specialization,
         String shift,
         String crm,
-        String coren
+        String coren,
+        String department
 ) {
 }

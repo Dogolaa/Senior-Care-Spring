@@ -7,6 +7,7 @@ public record UpdateEmployeeRequest(
         String specialization,
         String shift,
         String crm,
-        String coren
+        String coren,
+        String department
 ) {
 }

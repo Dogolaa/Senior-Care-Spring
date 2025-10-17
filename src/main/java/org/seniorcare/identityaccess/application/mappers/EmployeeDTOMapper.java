@@ -3,6 +3,7 @@ package org.seniorcare.identityaccess.application.mappers;
 import org.seniorcare.identityaccess.application.dto.employee.EmployeeDTO;
 import org.seniorcare.identityaccess.domain.entities.Doctor;
 import org.seniorcare.identityaccess.domain.entities.Employee;
+import org.seniorcare.identityaccess.domain.entities.Manager;
 import org.seniorcare.identityaccess.domain.entities.Nurse;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,7 @@ public class EmployeeDTOMapper {
                     doctor.getSpecialization(),
                     doctor.getShift(),
                     doctor.getCrm(),
+                    null,
                     null
             );
         } else if (employee instanceof Nurse nurse) {
@@ -30,7 +32,20 @@ public class EmployeeDTOMapper {
                     nurse.getSpecialization(),
                     nurse.getShift(),
                     null,
-                    nurse.getCoren()
+                    nurse.getCoren(),
+                    null
+            );
+        } else if (employee instanceof Manager manager) {
+            return new EmployeeDTO(
+                    manager.getId(),
+                    manager.getUser().getId(),
+                    "Manager",
+                    manager.getAdmissionDate(),
+                    null,
+                    manager.getShift(),
+                    null,
+                    null,
+                    manager.getDepartment()
             );
         }
         throw new IllegalArgumentException("Tipo de funcionário desconhecido para conversão em DTO: " + employee.getClass().getName());
