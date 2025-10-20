@@ -12,10 +12,23 @@ import org.seniorcare.identityaccess.api.rest.dto.employee.UpdateEmployeeRequest
 import org.seniorcare.identityaccess.application.commands.handlers.employee.*;
 import org.seniorcare.identityaccess.application.commands.impl.employee.*;
 import org.seniorcare.identityaccess.application.dto.employee.EmployeeDTO;
+import org.seniorcare.identityaccess.application.dto.nurse.NurseDTO;
+import org.seniorcare.identityaccess.application.queries.handlers.nurse.FindAllNursesQueryHandler;
+import org.seniorcare.identityaccess.application.queries.handlers.nurse.FindNurseByIdQueryHandler;
+import org.seniorcare.identityaccess.application.queries.impl.nurse.FindAllNursesQuery;
+import org.seniorcare.identityaccess.application.queries.impl.nurse.FindNurseByIdQuery;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/v1/employees")
@@ -27,19 +40,28 @@ public class EmployeeController {
     private final PromoteUserToDoctorCommandHandler promoteUserToDoctorHandler;
     private final UpdateEmployeeCommandHandler updateEmployeeHandler;
     private final PromoteUserToManagerCommandHandler promoteUserToManagerHandler;
+    private final FindAllNursesQueryHandler findAllNursesHandler;
+    private final FindNurseByIdQueryHandler findNurseByIdHandler;
+    private final PagedResourcesAssembler<NurseDTO> pagedResourcesAssembler;
 
     public EmployeeController(
             PromoteUserToNurseCommandHandler promoteUserToNurseHandler,
             DemoteEmployeeToUserCommandHandler demoteEmployeeToUserHandler,
             PromoteUserToDoctorCommandHandler promoteUserToDoctorHandler,
             UpdateEmployeeCommandHandler updateEmployeeHandler,
-            PromoteUserToManagerCommandHandler promoteUserToManagerHandler
+            PromoteUserToManagerCommandHandler promoteUserToManagerHandler,
+            FindAllNursesQueryHandler findAllNursesHandler,
+            FindNurseByIdQueryHandler findNurseByIdHandler,
+            PagedResourcesAssembler<NurseDTO> pagedResourcesAssemble
     ) {
         this.promoteUserToNurseHandler = promoteUserToNurseHandler;
         this.demoteEmployeeToUserHandler = demoteEmployeeToUserHandler;
         this.promoteUserToDoctorHandler = promoteUserToDoctorHandler;
         this.updateEmployeeHandler = updateEmployeeHandler;
         this.promoteUserToManagerHandler = promoteUserToManagerHandler;
+        this.findAllNursesHandler = findAllNursesHandler;
+        this.findNurseByIdHandler = findNurseByIdHandler;
+        this.pagedResourcesAssembler = pagedResourcesAssemble;
     }
 
     @Operation(summary = "Promove usuário(a) para enfermeiro(a)")
@@ -131,6 +153,40 @@ public class EmployeeController {
         EmployeeDTO updatedEmployee = updateEmployeeHandler.handle(command);
 
         return ResponseEntity.ok(updatedEmployee);
+    }
+
+    @Operation(summary = "Busca um(a) enfermeiro(a) por ID")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Enfermeiro(a) encontrado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Enfermeiro(a) não encontrado")})
+    @GetMapping(value = "/nurses/{id}")
+    public ResponseEntity<EntityModel<NurseDTO>> findNurseById(@PathVariable UUID id) {
+        var query = new FindNurseByIdQuery(id);
+
+        return findNurseByIdHandler.handle(query)
+                .map(this::addLinksToNurse)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "Lista todos os enfermeiros(as) com paginação")
+    @GetMapping(value = "/nurses")
+    public ResponseEntity<PagedModel<EntityModel<NurseDTO>>> findAllNurses(Pageable pageable) {
+        var query = new FindAllNursesQuery(pageable);
+        Page<NurseDTO> nursesPages = findAllNursesHandler.handle(query);
+
+        PagedModel<EntityModel<NurseDTO>> pagedModel = pagedResourcesAssembler.toModel(nursesPages, this::addLinksToNurse);
+
+        return ResponseEntity.ok(pagedModel);
+    }
+
+
+    private EntityModel<NurseDTO> addLinksToNurse(NurseDTO nurseDto) {
+        return EntityModel.of(nurseDto,
+                linkTo(methodOn(EmployeeController.class).findNurseById(nurseDto.getId())).withSelfRel(),
+                linkTo(methodOn(EmployeeController.class).demoteEmployeeToUser(nurseDto.getId())).withRel("delete"),
+                linkTo(methodOn(EmployeeController.class).updateEmployee(nurseDto.getId(), null)).withRel("update"),
+                linkTo(methodOn(EmployeeController.class).findAllNurses(null)).withRel("all-nurses")
+        );
     }
 
 }
