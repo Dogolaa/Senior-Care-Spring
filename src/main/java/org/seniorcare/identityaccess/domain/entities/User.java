@@ -1,8 +1,10 @@
 package org.seniorcare.identityaccess.domain.entities;
 
 import org.seniorcare.identityaccess.domain.vo.Email;
+import org.seniorcare.identityaccess.domain.vo.HashedPassword;
 import org.seniorcare.shared.exceptions.BadRequestException;
 import org.seniorcare.shared.exceptions.ResourceNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -15,16 +17,13 @@ public class User {
     private String phone;
     private Boolean isActive;
     private UUID addressId;
-    private String password;
+    private HashedPassword password;
     private UUID roleId;
     private Instant createdAt;
     private Instant updatedAt;
     private Instant deletedAt;
 
-    // TODO: [DDD] Refatorar 'email' para um Value Object 'Email' com validação de formato.
-    // TODO: [SECURITY] Refatorar 'password' para um Value Object 'Password' com hashing do Spring Security.
-
-    private User(UUID id, String name, Email email, String phone, UUID addressId, String password, UUID roleId) {
+    private User(UUID id, String name, Email email, String phone, UUID addressId, HashedPassword password, UUID roleId) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -39,7 +38,7 @@ public class User {
         this.deletedAt = null;
     }
 
-    public User(UUID id, String name, Email email, String phone, Boolean isActive, UUID addressId, String password, UUID roleId, Instant createdAt, Instant updatedAt, Instant deletedAt) {
+    public User(UUID id, String name, Email email, String phone, Boolean isActive, UUID addressId, HashedPassword password, UUID roleId, Instant createdAt, Instant updatedAt, Instant deletedAt) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -89,7 +88,7 @@ public class User {
         return addressId;
     }
 
-    public String getPassword() {
+    public HashedPassword getPassword() {
         return password;
     }
 
@@ -98,12 +97,12 @@ public class User {
     }
 
 
-    public static User create(String name, String email, String phone, UUID addressId, String plainTextPassword, UUID roleId) {
+    public static User create(String name, String email, String phone, UUID addressId, HashedPassword hashedPassword, UUID roleId) {
+        if (hashedPassword == null) {
+            throw new IllegalArgumentException("Hashed password is required.");
+        }
         if (name == null || name.trim().isEmpty()) {
             throw new BadRequestException("User name cannot be empty.");
-        }
-        if (plainTextPassword == null || plainTextPassword.length() < 8) {
-            throw new IllegalArgumentException("Password must be at least 8 characters long.");
         }
         if (roleId == null) {
             throw new IllegalArgumentException("User must have a role.");
@@ -111,16 +110,23 @@ public class User {
 
         Email validEmail = new Email(email);
 
-        return new User(UUID.randomUUID(), name, validEmail, phone, addressId, plainTextPassword, roleId);
+        return new User(UUID.randomUUID(), name, validEmail, phone, addressId, hashedPassword, roleId);
     }
 
 
-    public void changePassword(String newPlainTextPassword) {
-        if (newPlainTextPassword == null || newPlainTextPassword.length() < 8) {
-            throw new IllegalArgumentException("New password must be at least 8 characters long.");
+    public void changePassword(HashedPassword newHashedPassword) {
+        if (newHashedPassword == null) {
+            throw new IllegalArgumentException("New hashed password is required.");
         }
-        this.password = newPlainTextPassword;
+        this.password = newHashedPassword;
         this.updatedAt = Instant.now();
+    }
+
+    public boolean checkPassword(String plainTextPassword, PasswordEncoder encoder) {
+        if (plainTextPassword == null || plainTextPassword.isBlank()) {
+            return false;
+        }
+        return encoder.matches(plainTextPassword, this.password.value());
     }
 
     public void update(String newName, String newEmail, String newPhone, UUID newAddressId, UUID newRoleId) {

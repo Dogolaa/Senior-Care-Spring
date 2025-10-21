@@ -29,6 +29,12 @@ azure:
     subscription-key: ${AZURE_SPEECH_KEY}
     region: ${AZURE_SPEECH_REGION}
 
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET_KEY}
+      expiration: 86400000
+
 ---
 spring:
   config:

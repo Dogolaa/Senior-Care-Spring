@@ -5,6 +5,8 @@ import org.seniorcare.identityaccess.domain.entities.Role;
 import org.seniorcare.identityaccess.domain.entities.User;
 import org.seniorcare.identityaccess.domain.repositories.IRoleRepository;
 import org.seniorcare.identityaccess.domain.repositories.IUserRepository;
+import org.seniorcare.identityaccess.domain.vo.HashedPassword;
+import org.seniorcare.identityaccess.domain.vo.Password;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,14 +35,18 @@ public class CreateUserCommandHandler {
         Role defaultRole = roleRepository.findByName("DEFAULT_USER")
                 .orElseThrow(() -> new IllegalStateException("FATAL: Default role 'DEFAULT_USER' not found in database."));
 
-        String hashedPassword = passwordEncoder.encode(command.plainTextPassword());
+        Password plainPasswordVO = new Password(command.plainTextPassword());
+
+        String hashedPassword = passwordEncoder.encode(plainPasswordVO.value());
+
+        HashedPassword hashedPasswordVO = new HashedPassword(hashedPassword);
 
         User newUser = User.create(
                 command.name(),
                 command.email(),
                 command.phone(),
                 command.addressId(),
-                hashedPassword,
+                hashedPasswordVO,
                 defaultRole.getId()
         );
 
