@@ -36,6 +36,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -113,6 +114,7 @@ public class EmployeeController {
 
     @Operation(summary = "Promove usuário(a) para enfermeiro(a)")
     @PostMapping("/nurses")
+    @PreAuthorize("hasAuthority('MANAGE_EMPLOYEES')")
     public ResponseEntity<Void> promoteUserToNurse(@RequestBody PromoteUserToNurseRequest request) {
         var command = new PromoteUserToNurseCommand(
                 request.userId(),
@@ -127,6 +129,7 @@ public class EmployeeController {
 
     @Operation(summary = "Promove usuário(a) para gerente")
     @PostMapping("/managers")
+    @PreAuthorize("hasAuthority('MANAGE_EMPLOYEES')")
     public ResponseEntity<Void> promoteUserToManager(@RequestBody PromoteUserToManagerRequest request) {
         var command = new PromoteUserToManagerCommand(
                 request.userId(),
@@ -140,6 +143,7 @@ public class EmployeeController {
 
     @Operation(summary = "Promove usuário(a) para médico(a)")
     @PostMapping("/doctors")
+    @PreAuthorize("hasAuthority('MANAGE_EMPLOYEES')")
     public ResponseEntity<Void> promoteUserToDoctor(@RequestBody PromoteUserToDoctorRequest request) {
         var command = new PromoteUserToDoctorCommand(
                 request.userId(),
@@ -154,6 +158,7 @@ public class EmployeeController {
 
     @Operation(summary = "Rebaixa funcionário(a) para usuário(a) padrão")
     @DeleteMapping("/{employeeId}")
+    @PreAuthorize("hasAuthority('MANAGE_EMPLOYEES')")
     public ResponseEntity<Void> demoteEmployeeToUser(@PathVariable UUID employeeId) {
         var command = new DemoteEmployeeToUserCommand(employeeId);
         demoteEmployeeToUserHandler.handle(command);
@@ -162,6 +167,7 @@ public class EmployeeController {
 
     @Operation(summary = "Atualiza dados de um(a) funcionário(a)")
     @PutMapping("/{employeeId}")
+    @PreAuthorize("hasAuthority('MANAGE_EMPLOYEES')")
     public ResponseEntity<EmployeeDTO> updateEmployee(
             @PathVariable UUID employeeId,
             @Valid @RequestBody UpdateEmployeeRequest request) {
@@ -180,6 +186,7 @@ public class EmployeeController {
 
     @Operation(summary = "Busca um(a) funcionário(a) genérico por ID")
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('READ_EMPLOYEE_DETAILS', 'MANAGE_EMPLOYEES')")
     public ResponseEntity<EntityModel<EmployeeDetailsDTO>> findEmployeeById(@PathVariable UUID id) {
         var query = new FindEmployeeByIdQuery(id);
         return findEmployeeByIdHandler.handle(query)
@@ -190,6 +197,7 @@ public class EmployeeController {
 
     @Operation(summary = "Lista todos os funcionários(as) com paginação")
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('READ_ALL_EMPLOYEES', 'MANAGE_EMPLOYEES')")
     public ResponseEntity<PagedModel<EntityModel<EmployeeDetailsDTO>>> findAllEmployees(Pageable pageable) {
         var query = new FindAllEmployeesQuery(pageable);
         Page<EmployeeDetailsDTO> employeePages = findAllEmployeesHandler.handle(query);
@@ -199,6 +207,7 @@ public class EmployeeController {
 
     @Operation(summary = "Busca um(a) enfermeiro(a) por ID")
     @GetMapping(value = "/nurses/{id}")
+    @PreAuthorize("hasAnyAuthority('READ_NURSE_DETAILS', 'MANAGE_EMPLOYEES')")
     public ResponseEntity<EntityModel<NurseDTO>> findNurseById(@PathVariable UUID id) {
         var query = new FindNurseByIdQuery(id);
         return findNurseByIdHandler.handle(query)
@@ -209,6 +218,7 @@ public class EmployeeController {
 
     @Operation(summary = "Lista todos os enfermeiros(as) com paginação")
     @GetMapping(value = "/nurses")
+    @PreAuthorize("hasAnyAuthority('READ_ALL_NURSES', 'MANAGE_EMPLOYEES')")
     public ResponseEntity<PagedModel<EntityModel<NurseDTO>>> findAllNurses(Pageable pageable) {
         var query = new FindAllNursesQuery(pageable);
         Page<NurseDTO> nursesPages = findAllNursesHandler.handle(query);
@@ -218,6 +228,7 @@ public class EmployeeController {
 
     @Operation(summary = "Busca um(a) gerente por ID")
     @GetMapping(value = "/managers/{id}")
+    @PreAuthorize("hasAnyAuthority('READ_MANAGER_DETAILS', 'MANAGE_EMPLOYEES')")
     public ResponseEntity<EntityModel<ManagerDTO>> findManagerById(@PathVariable UUID id) {
         var query = new FindManagerByIdQuery(id);
         return findManagerByIdHandler.handle(query)
@@ -228,6 +239,7 @@ public class EmployeeController {
 
     @Operation(summary = "Lista todos os gerentes com paginação")
     @GetMapping(value = "/managers")
+    @PreAuthorize("hasAnyAuthority('READ_ALL_MANAGERS', 'MANAGE_EMPLOYEES')")
     public ResponseEntity<PagedModel<EntityModel<ManagerDTO>>> findAllManagers(Pageable pageable) {
         var query = new FindAllManagersQuery(pageable);
         Page<ManagerDTO> managersPage = findAllManagersHandler.handle(query);
@@ -237,6 +249,7 @@ public class EmployeeController {
 
     @Operation(summary = "Busca um(a) médico(a) por ID")
     @GetMapping(value = "/doctors/{id}")
+    @PreAuthorize("hasAnyAuthority('READ_DOCTOR_DETAILS', 'MANAGE_EMPLOYEES')")
     public ResponseEntity<EntityModel<DoctorDTO>> findDoctorById(@PathVariable UUID id) {
         var query = new FindDoctorByIdQuery(id);
         return findDoctorByIdHandler.handle(query)
@@ -247,12 +260,14 @@ public class EmployeeController {
 
     @Operation(summary = "Lista todos os médicos(as) com paginação")
     @GetMapping(value = "/doctors")
+    @PreAuthorize("hasAnyAuthority('READ_ALL_DOCTORS', 'MANAGE_EMPLOYEES')")
     public ResponseEntity<PagedModel<EntityModel<DoctorDTO>>> findAllDoctors(Pageable pageable) {
         var query = new FindAllDoctorsQuery(pageable);
         Page<DoctorDTO> doctorPages = findAllDoctorsHandler.handle(query);
         PagedModel<EntityModel<DoctorDTO>> pagedModel = doctorPagedResourcesAssembler.toModel(doctorPages, this::addLinksToDoctor);
         return ResponseEntity.ok(pagedModel);
     }
+
 
     private EntityModel<EmployeeDetailsDTO> addLinksToEmployee(EmployeeDetailsDTO employeeDto) {
         return EntityModel.of(employeeDto,

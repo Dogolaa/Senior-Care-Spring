@@ -2,6 +2,7 @@ package org.seniorcare.identityaccess.infrastructure.persistence.jpa.mappers;
 
 import org.seniorcare.identityaccess.domain.entities.User;
 import org.seniorcare.identityaccess.domain.vo.Email;
+import org.seniorcare.identityaccess.domain.vo.HashedPassword;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.RoleModel;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.models.UserModel;
 import org.seniorcare.identityaccess.infrastructure.persistence.jpa.repositories.role.SpringDataRoleRepository;
@@ -30,7 +31,7 @@ public class UserMapper {
         model.setPhone(entity.getPhone());
         model.setActive(entity.isActive());
         model.setAddressId(entity.getAddressId());
-        model.setPassword(entity.getPassword());
+        model.setPassword(entity.getPassword().value());
         model.setRole(roleModel);
         model.setDeletedAt(entity.getDeletedAt());
 
@@ -47,7 +48,7 @@ public class UserMapper {
                 model.getPhone(),
                 model.isActive(),
                 model.getAddressId(),
-                model.getPassword(),
+                new HashedPassword(model.getPassword()),
                 model.getRole() != null ? model.getRole().getId() : null,
                 model.getCreatedAt(),
                 model.getUpdatedAt(),
