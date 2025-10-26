@@ -23,7 +23,8 @@ public class User {
     private Instant updatedAt;
     private Instant deletedAt;
 
-    private User(UUID id, String name, Email email, String phone, UUID addressId, HashedPassword password, UUID roleId) {
+    private User(UUID id, String name, Email email, String phone, UUID addressId,
+                 HashedPassword password, UUID roleId) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -38,7 +39,9 @@ public class User {
         this.deletedAt = null;
     }
 
-    public User(UUID id, String name, Email email, String phone, Boolean isActive, UUID addressId, HashedPassword password, UUID roleId, Instant createdAt, Instant updatedAt, Instant deletedAt) {
+    public User(UUID id, String name, Email email, String phone, Boolean isActive,
+                UUID addressId, HashedPassword password, UUID roleId, Instant createdAt,
+                Instant updatedAt, Instant deletedAt) {
         this.id = id;
         this.name = name;
         this.email = email;
