@@ -4,6 +4,7 @@
     <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V10__Add_Shift_At_To_Doctor_Table.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V15__Create_Resident_Table.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V16__Add_Room_In_Resident_Table.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V19__Add_Resident_Family_Link_Table.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V2__Change_User_Table.sql" dialect="PostgreSQL" />
   </component>
 </project>

@@ -1,5 +1,6 @@
 package org.seniorcare.residentmanagement.domain.aggregates;
 
+import org.seniorcare.residentmanagement.domain.entities.FamilyLink;
 import org.seniorcare.residentmanagement.domain.events.ResidentAdmittedEvent;
 import org.seniorcare.residentmanagement.domain.vo.BloodType;
 import org.seniorcare.residentmanagement.domain.vo.Cpf;
@@ -10,8 +11,7 @@ import org.seniorcare.shared.exceptions.BadRequestException;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.UUID;
-
+import java.util.*;
 
 public class Resident extends BaseAggregateRoot {
 
@@ -20,7 +20,8 @@ public class Resident extends BaseAggregateRoot {
     private final Rg rg;
     private final LocalDate dateOfBirth;
 
-    private UUID responsibleId;
+    private final List<FamilyLink> familyLinks = new ArrayList<>();
+    private final List<String> allergies = new ArrayList<>();
     private String name;
     private Gender gender;
     private BloodType bloodType;
@@ -30,25 +31,25 @@ public class Resident extends BaseAggregateRoot {
     private Instant createdAt;
     private Instant updatedAt;
     private Instant deletedAt;
-
+    
     private Resident(
-            UUID responsibleId, String name, Cpf cpf, Rg rg, LocalDate dateOfBirth,
-            Gender gender, BloodType bloodType, String room) {
+            String name, Cpf cpf, Rg rg, LocalDate dateOfBirth,
+            Gender gender, BloodType bloodType, List<String> initialAllergies, String room) {
 
-        if (responsibleId == null) throw new BadRequestException("Responsible ID cannot be null for admission.");
         if (name == null || name.trim().isEmpty()) throw new BadRequestException("Resident name cannot be empty.");
         if (dateOfBirth == null) throw new BadRequestException("Date of birth cannot be null.");
         if (room == null || room.trim().isEmpty()) throw new BadRequestException("Room number cannot be empty.");
 
         this.id = UUID.randomUUID();
-        this.responsibleId = responsibleId;
         this.name = name;
         this.cpf = cpf;
         this.rg = rg;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.bloodType = bloodType;
-        //TODO: allergy
+        if (initialAllergies != null) {
+            initialAllergies.forEach(this::addAllergyInternal);
+        }
         this.isActive = true;
         this.admissionDate = LocalDate.now();
         this.room = room;
@@ -59,45 +60,45 @@ public class Resident extends BaseAggregateRoot {
     }
 
     public Resident(
-            UUID id, UUID responsibleId, String name, Cpf cpf, Rg rg, LocalDate dateOfBirth,
-            Gender gender, BloodType bloodType, Boolean isActive,
-            LocalDate admissionDate, String room, Instant createdAt, Instant updatedAt,
-            Instant deletedAt) {
+            UUID id, String name, Cpf cpf, Rg rg, LocalDate dateOfBirth,
+            Gender gender, BloodType bloodType, List<String> allergies, Boolean isActive,
+            LocalDate admissionDate, String room, List<FamilyLink> familyLinks,
+            Instant createdAt, Instant updatedAt, Instant deletedAt) {
 
         if (id == null) throw new IllegalArgumentException("ID cannot be null when reconstituting.");
         if (cpf == null) throw new IllegalArgumentException("CPF cannot be null when reconstituting.");
-        if (responsibleId == null)
-            throw new IllegalArgumentException("Responsible ID cannot be null when reconstituting.");
-
 
         this.id = id;
-        this.responsibleId = responsibleId;
         this.name = name;
         this.cpf = cpf;
         this.rg = rg;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.bloodType = bloodType;
-        // Sem allergy
+        if (allergies != null) {
+            this.allergies.addAll(allergies);
+        }
         this.isActive = (isActive != null) ? isActive : true;
         this.admissionDate = admissionDate;
         this.room = room;
+        if (familyLinks != null) {
+            this.familyLinks.addAll(familyLinks);
+        }
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
     }
 
     public static Resident admit(
-            UUID responsibleId, String name, String cpfValue, String rgValue, LocalDate dateOfBirth,
-            Gender gender, BloodType bloodType, String room) {
+            String name, String cpfValue, String rgValue, LocalDate dateOfBirth,
+            Gender gender, BloodType bloodType, List<String> initialAllergies, String room) {
 
         Cpf validCpf = new Cpf(cpfValue);
         Rg validRg = (rgValue != null && !rgValue.isBlank()) ? new Rg(rgValue) : null;
 
         Resident newResident = new Resident(
-                responsibleId, name, validCpf, validRg, dateOfBirth,
-                gender, bloodType, room);
-
+                name, validCpf, validRg, dateOfBirth,
+                gender, bloodType, initialAllergies, room);
 
         newResident.registerEvent(new ResidentAdmittedEvent(newResident.getId(), newResident.getName()));
 
@@ -106,10 +107,6 @@ public class Resident extends BaseAggregateRoot {
 
     public UUID getId() {
         return id;
-    }
-
-    public UUID getResponsibleId() {
-        return responsibleId;
     }
 
     public String getName() {
@@ -136,7 +133,6 @@ public class Resident extends BaseAggregateRoot {
         return bloodType;
     }
 
-    // Sem getAllergy()
     public Boolean isActive() {
         return isActive;
     }
@@ -161,6 +157,76 @@ public class Resident extends BaseAggregateRoot {
         return deletedAt;
     }
 
+    public List<FamilyLink> getFamilyLinks() {
+        return Collections.unmodifiableList(familyLinks);
+    }
+
+    public List<String> getAllergies() {
+        return Collections.unmodifiableList(allergies);
+    }
+
+    private void addAllergyInternal(String allergyDescription) {
+        if (allergyDescription == null || allergyDescription.isBlank()) {
+            throw new BadRequestException("Allergy description cannot be empty.");
+        }
+        String normalizedAllergy = allergyDescription.trim().toUpperCase();
+        if (!this.allergies.contains(normalizedAllergy)) {
+            this.allergies.add(normalizedAllergy);
+        }
+    }
+
+    public void addAllergy(String allergyDescription) {
+        this.addAllergyInternal(allergyDescription);
+        this.updatedAt = Instant.now();
+    }
+
+    public void removeAllergy(String allergyDescription) {
+        if (allergyDescription == null || allergyDescription.isBlank()) return;
+        String normalizedAllergy = allergyDescription.trim().toUpperCase();
+        boolean removed = this.allergies.remove(normalizedAllergy);
+        if (removed) {
+            this.updatedAt = Instant.now();
+        }
+    }
+
+    public void addFamilyLink(UUID familyMemberId, String relationship, boolean isPrimaryContact) {
+        if (this.familyLinks.stream().anyMatch(v -> v.getFamilyMemberId().equals(familyMemberId))) {
+            throw new IllegalStateException("This family member already has a link to the resident.");
+        }
+
+        if (isPrimaryContact) {
+            this.familyLinks.forEach(FamilyLink::removePrimaryContact);
+        }
+
+        FamilyLink newLink = FamilyLink.create(familyMemberId, relationship, isPrimaryContact);
+        this.familyLinks.add(newLink);
+        this.updatedAt = Instant.now();
+    }
+
+    public void removeFamilyLink(UUID familyLinkId) {
+        Optional<FamilyLink> linkOpt = this.familyLinks.stream().filter(v -> v.getId().equals(familyLinkId)).findFirst();
+        if (linkOpt.isPresent()) {
+            if (linkOpt.get().isPrimaryContact() && this.familyLinks.size() == 1) {
+                throw new IllegalStateException("Cannot remove the last and only primary contact.");
+            }
+            boolean removed = this.familyLinks.removeIf(v -> v.getId().equals(familyLinkId));
+            if (removed) {
+                this.updatedAt = Instant.now();
+            }
+        }
+    }
+
+    public void setPrimaryContact(UUID familyLinkId) {
+        Optional<FamilyLink> linkOpt = this.familyLinks.stream().filter(v -> v.getId().equals(familyLinkId)).findFirst();
+        if (linkOpt.isEmpty()) {
+            throw new BadRequestException("Family link not found for this resident.");
+        }
+        if (!linkOpt.get().isPrimaryContact()) {
+            this.familyLinks.forEach(FamilyLink::removePrimaryContact);
+            linkOpt.get().makePrimaryContact();
+            this.updatedAt = Instant.now();
+        }
+    }
 
     public void transferRoom(String newRoom) {
         if (!this.isActive) {
@@ -181,16 +247,4 @@ public class Resident extends BaseAggregateRoot {
         this.deletedAt = Instant.now();
         this.updatedAt = Instant.now();
     }
-
-    public void changePrimaryResponsible(UUID newResponsibleId) {
-        if (newResponsibleId == null) {
-            throw new BadRequestException("New responsible ID cannot be null.");
-        }
-        if (!this.isActive) {
-            throw new IllegalStateException("Cannot change responsible for an inactive resident.");
-        }
-        this.responsibleId = newResponsibleId;
-        this.updatedAt = Instant.now();
-    }
-
 }

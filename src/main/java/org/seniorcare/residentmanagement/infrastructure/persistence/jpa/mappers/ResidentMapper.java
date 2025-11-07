@@ -1,17 +1,25 @@
 package org.seniorcare.residentmanagement.infrastructure.persistence.jpa.mappers;
 
 import org.seniorcare.residentmanagement.domain.aggregates.Resident;
+import org.seniorcare.residentmanagement.domain.entities.FamilyLink;
 import org.seniorcare.residentmanagement.domain.vo.BloodType;
 import org.seniorcare.residentmanagement.domain.vo.Cpf;
 import org.seniorcare.residentmanagement.domain.vo.Gender;
 import org.seniorcare.residentmanagement.domain.vo.Rg;
+import org.seniorcare.residentmanagement.infrastructure.persistence.jpa.models.FamilyLinkModel;
 import org.seniorcare.residentmanagement.infrastructure.persistence.jpa.models.ResidentModel;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ResidentMapper {
 
-    public ResidentMapper() {
+    private final FamilyLinkMapper familyLinkMapper;
+
+    public ResidentMapper(FamilyLinkMapper familyLinkMapper) {
+        this.familyLinkMapper = familyLinkMapper;
     }
 
     public ResidentModel toModel(Resident entity) {
@@ -29,7 +37,20 @@ public class ResidentMapper {
         model.setActive(entity.isActive());
         model.setAdmissionDate(entity.getAdmissionDate());
         model.setRoom(entity.getRoom());
-        model.setResponsibleId(entity.getResponsibleId());
+        if (entity.getAllergies() != null) {
+            model.setAllergies(entity.getAllergies());
+        }
+        if (entity.getFamilyLinks() != null) {
+            List<FamilyLinkModel> linkModels = entity.getFamilyLinks().stream()
+                    .map(linkEntity -> {
+                        FamilyLinkModel linkModel = familyLinkMapper.toModel(linkEntity);
+                        linkModel.setResident(model);
+                        return linkModel;
+                    })
+                    .collect(Collectors.toList());
+            model.setFamilyLinks(linkModels);
+        }
+
         model.setCreatedAt(entity.getCreatedAt());
         model.setUpdatedAt(entity.getUpdatedAt());
         model.setDeletedAt(entity.getDeletedAt());
@@ -47,18 +68,28 @@ public class ResidentMapper {
         Gender gender = (model.getGender() != null) ? Gender.valueOf(model.getGender()) : null;
         BloodType bloodType = (model.getBloodType() != null) ? BloodType.valueOf(model.getBloodType()) : null;
 
+        List<String> allergies = (model.getAllergies() != null) ? model.getAllergies() : null;
+
+        List<FamilyLink> familyLinks = null;
+        if (model.getFamilyLinks() != null) {
+            familyLinks = model.getFamilyLinks().stream()
+                    .map(familyLinkMapper::toEntity)
+                    .collect(Collectors.toList());
+        }
+
         return new Resident(
                 model.getId(),
-                model.getResponsibleId(),
                 model.getName(),
                 cpf,
                 rg,
                 model.getDateOfBirth(),
                 gender,
                 bloodType,
+                allergies,
                 model.isActive(),
                 model.getAdmissionDate(),
                 model.getRoom(),
+                familyLinks,
                 model.getCreatedAt(),
                 model.getUpdatedAt(),
                 model.getDeletedAt()
