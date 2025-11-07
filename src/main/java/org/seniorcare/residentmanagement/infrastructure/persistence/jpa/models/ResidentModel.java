@@ -1,14 +1,13 @@
 package org.seniorcare.residentmanagement.infrastructure.persistence.jpa.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.hibernate.annotations.SQLRestriction;
 import org.seniorcare.shared.infrastructure.persistence.Auditable;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -29,8 +28,21 @@ public class ResidentModel extends Auditable {
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
-    @Column(name = "primary_responsible_id", nullable = false)
-    private UUID responsibleId;
+    @OneToMany(
+            mappedBy = "resident",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<FamilyLinkModel> familyLinks = new ArrayList<>();
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "resident_allergies",
+            joinColumns = @JoinColumn(name = "resident_id")
+    )
+    @Column(name = "allergy_description")
+    private List<String> allergies = new ArrayList<>();
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -55,6 +67,7 @@ public class ResidentModel extends Auditable {
 
     public ResidentModel() {
     }
+
 
     public UUID getId() {
         return id;
@@ -88,12 +101,20 @@ public class ResidentModel extends Auditable {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public UUID getResponsibleId() {
-        return responsibleId;
+    public List<FamilyLinkModel> getFamilyLinks() {
+        return familyLinks;
     }
 
-    public void setResponsibleId(UUID responsibleId) {
-        this.responsibleId = responsibleId;
+    public void setFamilyLinks(List<FamilyLinkModel> familyLinks) {
+        this.familyLinks = familyLinks;
+    }
+
+    public List<String> getAllergies() {
+        return allergies;
+    }
+
+    public void setAllergies(List<String> allergies) {
+        this.allergies = allergies;
     }
 
     public String getName() {
@@ -154,12 +175,25 @@ public class ResidentModel extends Auditable {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (!(o instanceof ResidentModel that)) return false;
-        return isActive() == that.isActive() && Objects.equals(getId(), that.getId()) && Objects.equals(getCpf(), that.getCpf()) && Objects.equals(getRg(), that.getRg()) && Objects.equals(getDateOfBirth(), that.getDateOfBirth()) && Objects.equals(getResponsibleId(), that.getResponsibleId()) && Objects.equals(getName(), that.getName()) && Objects.equals(getGender(), that.getGender()) && Objects.equals(getBloodType(), that.getBloodType()) && Objects.equals(getAdmissionDate(), that.getAdmissionDate()) && Objects.equals(getRoom(), that.getRoom()) && Objects.equals(getDeletedAt(), that.getDeletedAt());
+        if (!super.equals(o)) return false;
+        return isActive == that.isActive &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(cpf, that.cpf) &&
+                Objects.equals(rg, that.rg) &&
+                Objects.equals(dateOfBirth, that.dateOfBirth) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(gender, that.gender) &&
+                Objects.equals(bloodType, that.bloodType) &&
+                Objects.equals(admissionDate, that.admissionDate) &&
+                Objects.equals(room, that.room) &&
+                Objects.equals(deletedAt, that.deletedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getCpf(), getRg(), getDateOfBirth(), getResponsibleId(), getName(), getGender(), getBloodType(), isActive(), getAdmissionDate(), getRoom(), getDeletedAt());
+        return Objects.hash(super.hashCode(), id, cpf, rg, dateOfBirth, name, gender,
+                bloodType, isActive, admissionDate, room, deletedAt);
     }
 }
