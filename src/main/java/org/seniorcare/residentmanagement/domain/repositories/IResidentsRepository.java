@@ -14,5 +14,7 @@ public interface IResidentsRepository {
 
     Optional<Resident> findByCpf(Cpf cpf);
 
+    boolean existsByCpf(Cpf cpf);
+
 
 }

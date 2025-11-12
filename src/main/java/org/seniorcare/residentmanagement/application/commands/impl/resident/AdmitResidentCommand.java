@@ -4,16 +4,16 @@ import org.seniorcare.residentmanagement.domain.vo.BloodType;
 import org.seniorcare.residentmanagement.domain.vo.Gender;
 
 import java.time.LocalDate;
-import java.util.UUID;
+import java.util.List;
 
 public record AdmitResidentCommand(
-        UUID responsibleId,
         String name,
         String cpfValue,
         String rgValue,
         LocalDate dateOfBirth,
         Gender gender,
         BloodType bloodType,
+        List<String> initialAllergies,
         String room
 ) {
 }

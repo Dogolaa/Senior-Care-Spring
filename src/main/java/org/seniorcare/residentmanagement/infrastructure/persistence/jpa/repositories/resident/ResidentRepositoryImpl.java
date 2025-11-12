@@ -28,17 +28,26 @@ public class ResidentRepositoryImpl implements IResidentsRepository {
 
         ResidentModel residentModel = residentMapper.toModel(resident);
 
+        if (residentModel.getFamilyLinks() != null) {
+            residentModel.getFamilyLinks().forEach(link -> link.setResident(residentModel));
+        }
+
         jpaRepository.save(residentModel);
     }
 
     @Override
     public Optional<Resident> findById(UUID id) {
-        return this.jpaRepository.findById(id).map(residentMapper::toEntity);
+        return this.jpaRepository.findByIdWithDetails(id).map(residentMapper::toEntity);
     }
 
     @Override
     public Optional<Resident> findByCpf(Cpf cpf) {
         return this.jpaRepository.findByCpf(cpf.CPF()).map(residentMapper::toEntity);
     }
-    
+
+    @Override
+    public boolean existsByCpf(Cpf cpf) {
+        return this.jpaRepository.findByCpf(cpf.CPF()).isPresent();
+    }
+
 }
