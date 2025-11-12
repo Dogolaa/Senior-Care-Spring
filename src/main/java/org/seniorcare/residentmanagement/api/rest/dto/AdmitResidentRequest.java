@@ -1,16 +1,14 @@
 package org.seniorcare.residentmanagement.api.rest.dto;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 import org.seniorcare.residentmanagement.domain.vo.BloodType;
 import org.seniorcare.residentmanagement.domain.vo.Gender;
 
 import java.time.LocalDate;
-import java.util.UUID;
+import java.util.List;
 
 public record AdmitResidentRequest(
-
-        @NotNull(message = "ID do responsável é obrigatório.")
-        UUID responsibleId,
 
         @NotBlank(message = "Nome completo é obrigatório.")
         @Size(min = 3, max = 255, message = "Nome deve ter entre 3 e 255 caracteres.")
@@ -33,6 +31,9 @@ public record AdmitResidentRequest(
 
         @NotNull(message = "Tipo sanguíneo é obrigatório.")
         BloodType bloodType,
+
+        @Nullable
+        List<String> initialAllergies,
 
         @NotBlank(message = "Número do quarto é obrigatório.")
         @Size(max = 50, message = "Número do quarto não pode exceder 50 caracteres.")

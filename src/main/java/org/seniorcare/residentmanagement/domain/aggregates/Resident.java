@@ -31,7 +31,7 @@ public class Resident extends BaseAggregateRoot {
     private Instant createdAt;
     private Instant updatedAt;
     private Instant deletedAt;
-    
+
     private Resident(
             String name, Cpf cpf, Rg rg, LocalDate dateOfBirth,
             Gender gender, BloodType bloodType, List<String> initialAllergies, String room) {
@@ -189,7 +189,7 @@ public class Resident extends BaseAggregateRoot {
         }
     }
 
-    public void addFamilyLink(UUID familyMemberId, String relationship, boolean isPrimaryContact) {
+    public FamilyLink addFamilyLink(UUID familyMemberId, String relationship, boolean isPrimaryContact) {
         if (this.familyLinks.stream().anyMatch(v -> v.getFamilyMemberId().equals(familyMemberId))) {
             throw new IllegalStateException("This family member already has a link to the resident.");
         }
@@ -201,6 +201,7 @@ public class Resident extends BaseAggregateRoot {
         FamilyLink newLink = FamilyLink.create(familyMemberId, relationship, isPrimaryContact);
         this.familyLinks.add(newLink);
         this.updatedAt = Instant.now();
+        return newLink;
     }
 
     public void removeFamilyLink(UUID familyLinkId) {
