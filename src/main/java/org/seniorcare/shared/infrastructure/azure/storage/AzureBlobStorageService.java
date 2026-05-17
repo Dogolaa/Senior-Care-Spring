@@ -7,11 +7,13 @@ import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.blob.models.BlobHttpHeaders;
 import org.seniorcare.shared.application.storage.IFileStorageService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
+@ConditionalOnProperty(name = "azure.storage.connection-string")
 public class AzureBlobStorageService implements IFileStorageService {
 
     private final BlobServiceClient blobServiceClient;
