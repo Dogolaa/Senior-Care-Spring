@@ -7,11 +7,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.seniorcare.health.application.commands.impl.AddPhotoToActivityHistoryCommand;
 import org.seniorcare.health.domain.repositories.IActivityRecordRepository;
-import org.seniorcare.shared.application.storage.IFileStorageService;
 
 import java.util.UUID;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class AddPhotoToActivityHistoryCommandHandlerTest {
@@ -19,27 +18,18 @@ class AddPhotoToActivityHistoryCommandHandlerTest {
     @Mock
     private IActivityRecordRepository activityRecordRepository;
 
-    @Mock
-    private IFileStorageService fileStorageService;
-
     @InjectMocks
     private AddPhotoToActivityHistoryCommandHandler handler;
 
     @Test
-    void handle_shouldUploadFileAndSaveUrl() {
+    void handle_shouldSavePhotoUrl() {
         UUID historyId = UUID.randomUUID();
-        byte[] content = "image content".getBytes();
-        String filename = "foto.jpg";
-        String contentType = "image/jpeg";
-        String uploadedUrl = "https://blob.azure.net/seniorcare-media/foto.jpg";
+        String photoUrl = "https://cdn.example.com/photos/foto.jpg";
 
-        AddPhotoToActivityHistoryCommand command = new AddPhotoToActivityHistoryCommand(historyId, content, filename, contentType);
-
-        when(fileStorageService.upload(content, filename, contentType)).thenReturn(uploadedUrl);
+        AddPhotoToActivityHistoryCommand command = new AddPhotoToActivityHistoryCommand(historyId, photoUrl);
 
         handler.handle(command);
 
-        verify(fileStorageService).upload(content, filename, contentType);
-        verify(activityRecordRepository).addPhotoToHistory(historyId, uploadedUrl);
+        verify(activityRecordRepository).addPhotoToHistory(historyId, photoUrl);
     }
 }

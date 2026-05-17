@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.seniorcare.health.api.rest.dto.AddPhotoRequest;
 import org.seniorcare.health.api.rest.dto.activity_record.CreateActivityRecordRequest;
 import org.seniorcare.health.api.rest.dto.activity_record.LogActivityRequest;
 import org.seniorcare.health.application.commands.handlers.AddPhotoToActivityHistoryCommandHandler;
@@ -16,14 +17,11 @@ import org.seniorcare.health.application.commands.impl.LogActivityCommand;
 import org.seniorcare.health.application.queries.dto.ActivityRecordResponse;
 import org.seniorcare.health.application.queries.handlers.FindActivityRecordByResidentIdQueryHandler;
 import org.seniorcare.health.application.queries.impl.FindActivityRecordByResidentIdQuery;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.UUID;
 
@@ -110,22 +108,17 @@ public class ActivityRecordController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Adiciona uma foto a uma ocorrência de atividade")
+    @Operation(summary = "Adiciona uma foto a uma ocorrência de atividade via URL")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Foto adicionada com sucesso"),
             @ApiResponse(responseCode = "404", description = "Ocorrência de atividade não encontrada"),
             @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
     })
-    @PostMapping(value = "/histories/{historyId}/photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping("/histories/{historyId}/photos")
     @PreAuthorize("hasAuthority('MANAGE_ACTIVITIES')")
     public ResponseEntity<Void> addPhoto(@PathVariable UUID historyId,
-                                          @RequestParam("file") MultipartFile file) throws IOException {
-        var command = new AddPhotoToActivityHistoryCommand(
-                historyId,
-                file.getBytes(),
-                file.getOriginalFilename(),
-                file.getContentType()
-        );
+                                          @Valid @RequestBody AddPhotoRequest request) {
+        var command = new AddPhotoToActivityHistoryCommand(historyId, request.getPhotoUrl());
         addPhotoHandler.handle(command);
         return ResponseEntity.ok().build();
     }

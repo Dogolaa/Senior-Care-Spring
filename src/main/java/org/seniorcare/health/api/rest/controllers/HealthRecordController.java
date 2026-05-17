@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.seniorcare.health.api.rest.dto.AddPhotoRequest;
 import org.seniorcare.health.api.rest.dto.CreateHealthRecordRequest;
 import org.seniorcare.health.api.rest.dto.UpdateHealthRecordRequest;
 import org.seniorcare.health.api.rest.dto.push_vitals.PushVitalsRequest;
@@ -19,14 +20,11 @@ import org.seniorcare.health.application.commands.impl.UpdateHealthRecordCommand
 import org.seniorcare.health.application.queries.dto.HealthRecordResponse;
 import org.seniorcare.health.application.queries.handlers.FindHealthRecordByResidentIdQueryHandler;
 import org.seniorcare.health.application.queries.impl.FindHealthRecordByResidentIdQuery;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.UUID;
 
@@ -145,22 +143,17 @@ public class HealthRecordController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Adiciona uma foto a uma medição do prontuário")
+    @Operation(summary = "Adiciona uma foto a uma medição do prontuário via URL")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Foto adicionada com sucesso"),
             @ApiResponse(responseCode = "404", description = "Medição não encontrada"),
             @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
     })
-    @PostMapping(value = "/histories/{historyId}/photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping("/histories/{historyId}/photos")
     @PreAuthorize("hasAuthority('MANAGE_HEALTH_RECORDS')")
     public ResponseEntity<Void> addPhoto(@PathVariable UUID historyId,
-                                          @RequestParam("file") MultipartFile file) throws IOException {
-        var command = new AddPhotoToHealthRecordHistoryCommand(
-                historyId,
-                file.getBytes(),
-                file.getOriginalFilename(),
-                file.getContentType()
-        );
+                                          @Valid @RequestBody AddPhotoRequest request) {
+        var command = new AddPhotoToHealthRecordHistoryCommand(historyId, request.getPhotoUrl());
         addPhotoHandler.handle(command);
         return ResponseEntity.ok().build();
     }

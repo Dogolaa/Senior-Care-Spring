@@ -18,7 +18,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -223,15 +222,17 @@ class HealthRecordControllerTest {
 
     @Test
     @WithMockUser(authorities = "MANAGE_HEALTH_RECORDS")
-    void addPhoto_withValidFile_shouldReturn200() throws Exception {
+    void addPhoto_withValidUrl_shouldReturn200() throws Exception {
         UUID historyId = UUID.randomUUID();
         doNothing().when(addPhotoHandler).handle(any());
 
-        MockMultipartFile file = new MockMultipartFile(
-                "file", "foto.jpg", "image/jpeg", "fake image content".getBytes());
+        String requestBody = """
+                {"photoUrl": "https://cdn.example.com/photos/foto.jpg"}
+                """;
 
-        mockMvc.perform(multipart("/api/v1/health-records/histories/{historyId}/photos", historyId)
-                        .file(file)
+        mockMvc.perform(post("/api/v1/health-records/histories/{historyId}/photos", historyId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
                         .with(csrf()))
                 .andExpect(status().isOk());
     }
