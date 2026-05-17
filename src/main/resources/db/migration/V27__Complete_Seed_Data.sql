@@ -179,15 +179,15 @@ $$
         INSERT INTO residents (id, name, cpf, rg, date_of_birth, gender, blood_type, is_active, admission_date, room, created_at, updated_at, deleted_at)
         VALUES
             -- Maria: 78 anos, hipertensão e alergia a medicamentos
-            (res_maria,   'Maria Aparecida Costa',    '52998224725', 'MG-12345678', '1946-03-15', 'FEMININO',  'O+',  true, '2024-01-10', 'Quarto 101', NOW(), NOW(), null),
+            (res_maria,   'Maria Aparecida Costa',    '52998224725', 'MG-12345678', '1946-03-15', 'FEMININO',  'O_POSITIVE',  true, '2024-01-10', 'Quarto 101', NOW(), NOW(), null),
             -- José: 82 anos, diabetes e doença cardiovascular
-            (res_jose,    'José Fernando Rodrigues',  '11144477735', 'SP-98765432', '1942-07-22', 'MASCULINO', 'A+',  true, '2024-02-05', 'Quarto 102', NOW(), NOW(), null),
+            (res_jose,    'José Fernando Rodrigues',  '11144477735', 'SP-98765432', '1942-07-22', 'MASCULINO', 'A_POSITIVE',  true, '2024-02-05', 'Quarto 102', NOW(), NOW(), null),
             -- Rosa: 75 anos, colesterol alto e alergia a látex
-            (res_rosa,    'Rosa Benedita Ferreira',   '71428793860', 'RJ-54321098', '1949-11-08', 'FEMININO',  'B-',  true, '2024-03-12', 'Quarto 103', NOW(), NOW(), null),
+            (res_rosa,    'Rosa Benedita Ferreira',   '71428793860', 'RJ-54321098', '1949-11-08', 'FEMININO',  'B_NEGATIVE',  true, '2024-03-12', 'Quarto 103', NOW(), NOW(), null),
             -- Antônio: 88 anos, hipertensão grave e diabetes insulino-dependente
-            (res_antonio, 'Antônio Carlos Neves',     '12345678909', 'BA-21098765', '1936-05-30', 'MASCULINO', 'AB+', true, '2023-11-20', 'Quarto 201', NOW(), NOW(), null),
+            (res_antonio, 'Antônio Carlos Neves',     '12345678909', 'BA-21098765', '1936-05-30', 'MASCULINO', 'AB_POSITIVE', true, '2023-11-20', 'Quarto 201', NOW(), NOW(), null),
             -- Luíza: 91 anos, insuficiência cardíaca leve
-            (res_luiza,   'Luíza Pedrosa Carvalho',  '45678912364', 'PE-10987654', '1933-09-14', 'FEMININO',  'O-',  true, '2023-09-01', 'Quarto 202', NOW(), NOW(), null)
+            (res_luiza,   'Luíza Pedrosa Carvalho',  '45678912364', 'PE-10987654', '1933-09-14', 'FEMININO',  'O_NEGATIVE',  true, '2023-09-01', 'Quarto 202', NOW(), NOW(), null)
         ON CONFLICT (id) DO NOTHING;
 
         -- ══════════════════════════════════════════════════════════════════════
