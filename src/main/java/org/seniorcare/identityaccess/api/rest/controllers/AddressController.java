@@ -17,6 +17,7 @@ import org.seniorcare.identityaccess.application.queries.handlers.address.FindAd
 import org.seniorcare.identityaccess.application.queries.impl.address.FindAddressByIdQuery;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -48,6 +49,7 @@ public class AddressController {
     @Operation(summary = "Cria um novo endereço e retorna seu ID")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Endereço criado com sucesso"), @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos")})
     @PostMapping
+    @PreAuthorize("hasAuthority('CREATE_USER')")
     public ResponseEntity<Map<String, UUID>> createAddress(@RequestBody CreateAddressRequest request) {
         var command = new CreateAddressCommand(request.cep(), request.country(), request.state(), request.city(), request.district()
                 , request.street(), request.number(), request.complement());
@@ -67,6 +69,7 @@ public class AddressController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Endereço  encontrado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Endereço não encontrado")})
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAuthority('READ_USER')")
     public ResponseEntity<EntityModel<AddressDTO>> findAddressById(@PathVariable UUID id) {
         var query = new FindAddressByIdQuery(id);
 
@@ -81,6 +84,7 @@ public class AddressController {
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos"),
             @ApiResponse(responseCode = "404", description = "Endereço não encontrado")})
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('UPDATE_USER')")
     public ResponseEntity<EntityModel<AddressDTO>> updateAddress(@PathVariable UUID id, @RequestBody UpdateAddressRequest request) {
         var command = new UpdateAddressCommand(
                 id,
@@ -105,6 +109,7 @@ public class AddressController {
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Endereço deletado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Endereço não encontrado")})
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAuthority('DELETE_USER')")
     public ResponseEntity<Void> deleteAddress(@PathVariable("id") UUID id) {
         var command = new DeleteAddressCommand(id);
         deleteHandler.handle(command);

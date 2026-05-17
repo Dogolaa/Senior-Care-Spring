@@ -4,10 +4,10 @@ import org.seniorcare.identityaccess.application.commands.impl.user.UpdateUserCo
 import org.seniorcare.identityaccess.application.dto.user.UserDTO;
 import org.seniorcare.identityaccess.domain.entities.User;
 import org.seniorcare.identityaccess.domain.repositories.IUserRepository;
+import org.seniorcare.shared.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -23,7 +23,7 @@ public class UpdateUserCommandHandler {
     public UserDTO handle(UpdateUserCommand command) {
 
         User userToUpdate = userRepository.findById(command.id())
-                .orElseThrow(() -> new NoSuchElementException("User with id " + command.id() + " not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + command.id() + " not found."));
 
         Optional<User> userWithSameEmail = userRepository.findByEmail(command.email());
 

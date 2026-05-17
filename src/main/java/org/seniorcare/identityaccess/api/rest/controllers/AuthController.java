@@ -10,6 +10,7 @@ import org.seniorcare.identityaccess.api.rest.dto.user.CreateUserRequest;
 import org.seniorcare.identityaccess.application.commands.handlers.user.CreateUserCommandHandler;
 import org.seniorcare.identityaccess.application.commands.impl.user.CreateUserCommand;
 import org.seniorcare.identityaccess.application.services.AuthenticationService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +37,7 @@ public class AuthController {
     @Operation(summary = "Registra um novo usuário")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Usuário criado com sucesso"), @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos")})
     @PostMapping("/register")
-    public ResponseEntity<Void> registerUser(@RequestBody CreateUserRequest request) {
+    public ResponseEntity<Void> registerUser(@Valid @RequestBody CreateUserRequest request) {
         var command = new CreateUserCommand(
                 request.name(),
                 request.email(),
@@ -60,7 +61,7 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Credenciais inválidas")
     })
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = authenticationService.login(request);
         return ResponseEntity.ok(response);
     }

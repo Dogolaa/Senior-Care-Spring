@@ -4,7 +4,6 @@ import org.seniorcare.identityaccess.domain.vo.Email;
 import org.seniorcare.identityaccess.domain.vo.HashedPassword;
 import org.seniorcare.shared.exceptions.BadRequestException;
 import org.seniorcare.shared.exceptions.ResourceNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -123,13 +122,6 @@ public class User {
         }
         this.password = newHashedPassword;
         this.updatedAt = Instant.now();
-    }
-
-    public boolean checkPassword(String plainTextPassword, PasswordEncoder encoder) {
-        if (plainTextPassword == null || plainTextPassword.isBlank()) {
-            return false;
-        }
-        return encoder.matches(plainTextPassword, this.password.value());
     }
 
     public void update(String newName, String newEmail, String newPhone, UUID newAddressId, UUID newRoleId) {

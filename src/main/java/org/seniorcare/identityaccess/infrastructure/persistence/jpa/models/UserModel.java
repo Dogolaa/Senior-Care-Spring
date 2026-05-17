@@ -2,6 +2,7 @@ package org.seniorcare.identityaccess.infrastructure.persistence.jpa.models;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.SQLRestriction;
+import org.seniorcare.identityaccess.application.security.AuthenticatedPrincipal;
 import org.seniorcare.shared.infrastructure.persistence.Auditable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "users")
 @SQLRestriction("deleted_at IS NULL")
-public class UserModel extends Auditable implements UserDetails {
+public class UserModel extends Auditable implements UserDetails, AuthenticatedPrincipal {
 
     @Id
     private UUID id;
@@ -116,6 +117,11 @@ public class UserModel extends Auditable implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String getRoleName() {
+        return role.getName();
     }
 
     @Override

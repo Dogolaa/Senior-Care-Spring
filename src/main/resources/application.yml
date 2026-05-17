@@ -28,6 +28,9 @@ azure:
   speech:
     subscription-key: ${AZURE_SPEECH_KEY}
     region: ${AZURE_SPEECH_REGION}
+  storage:
+    connection-string: ${AZURE_STORAGE_CONNECTION_STRING}
+    container-name: ${AZURE_STORAGE_CONTAINER_NAME:seniorcare-media}
 
 application:
   security:
