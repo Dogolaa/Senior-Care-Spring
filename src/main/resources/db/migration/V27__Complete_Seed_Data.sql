@@ -149,7 +149,7 @@ $$
         -- ══════════════════════════════════════════════════════════════════════
         -- 4. MÉDICOS
         -- ══════════════════════════════════════════════════════════════════════
-        INSERT INTO doctors (employee_id, crm, specialty)
+        INSERT INTO doctors (employee_id, crm, specialization)
         VALUES
             (emp_dr_ana,    'CRM-SP-123456', 'Geriatria'),
             (emp_dr_carlos, 'CRM-SP-789012', 'Clínica Médica')
@@ -158,7 +158,7 @@ $$
         -- ══════════════════════════════════════════════════════════════════════
         -- 5. ENFERMEIROS
         -- ══════════════════════════════════════════════════════════════════════
-        INSERT INTO nurses (employee_id, coren, specialty, shift)
+        INSERT INTO nurses (employee_id, coren, specialization, shift)
         VALUES
             (emp_enf_maria, 'COREN-SP-112233', 'Gerontologia', 'MANHA'),
             (emp_enf_joao,  'COREN-SP-445566', 'Saúde do Idoso', 'TARDE')
