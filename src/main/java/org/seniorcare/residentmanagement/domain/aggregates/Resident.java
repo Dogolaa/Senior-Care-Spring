@@ -240,6 +240,22 @@ public class Resident extends BaseAggregateRoot {
         this.updatedAt = Instant.now();
     }
 
+    public void update(String name, Gender gender, BloodType bloodType, String room) {
+        if (name != null && !name.trim().isEmpty()) {
+            this.name = name.trim();
+        }
+        if (gender != null) {
+            this.gender = gender;
+        }
+        if (bloodType != null) {
+            this.bloodType = bloodType;
+        }
+        if (room != null && !room.trim().isEmpty()) {
+            this.room = room.trim();
+        }
+        this.updatedAt = Instant.now();
+    }
+
     public void recordDischarge() {
         if (!this.isActive) {
             throw new IllegalStateException("Resident is already inactive.");

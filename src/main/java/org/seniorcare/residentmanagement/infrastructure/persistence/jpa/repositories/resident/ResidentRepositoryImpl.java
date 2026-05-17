@@ -6,6 +6,8 @@ import org.seniorcare.residentmanagement.domain.vo.Cpf;
 import org.seniorcare.residentmanagement.infrastructure.persistence.jpa.mappers.ResidentMapper;
 import org.seniorcare.residentmanagement.infrastructure.persistence.jpa.models.ResidentModel;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -25,7 +27,6 @@ public class ResidentRepositoryImpl implements IResidentsRepository {
 
     @Override
     public void save(Resident resident) {
-
         ResidentModel residentModel = residentMapper.toModel(resident);
 
         if (residentModel.getFamilyLinks() != null) {
@@ -50,4 +51,8 @@ public class ResidentRepositoryImpl implements IResidentsRepository {
         return this.jpaRepository.findByCpf(cpf.CPF()).isPresent();
     }
 
+    @Override
+    public Page<Resident> findAll(Pageable pageable) {
+        return this.jpaRepository.findAll(pageable).map(residentMapper::toEntity);
+    }
 }
