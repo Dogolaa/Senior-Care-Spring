@@ -27,8 +27,10 @@ import org.seniorcare.residentmanagement.application.commands.impl.resident.Remo
 import org.seniorcare.residentmanagement.application.commands.impl.resident.UpdateResidentCommand;
 import org.seniorcare.residentmanagement.application.dto.resident.ResidentDTO;
 import org.seniorcare.residentmanagement.application.queries.handlers.resident.FindAllResidentsQueryHandler;
+import org.seniorcare.residentmanagement.application.queries.handlers.resident.FindMyResidentsQueryHandler;
 import org.seniorcare.residentmanagement.application.queries.handlers.resident.FindResidentByIdQueryHandler;
 import org.seniorcare.residentmanagement.application.queries.impl.resident.FindAllResidentsQuery;
+import org.seniorcare.residentmanagement.application.queries.impl.resident.FindMyResidentsQuery;
 import org.seniorcare.residentmanagement.application.queries.impl.resident.FindResidentByIdQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +43,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -61,6 +64,7 @@ public class ResidentsController {
     private final RemoveAllergyCommandHandler removeAllergyHandler;
     private final FindAllResidentsQueryHandler findAllResidentsHandler;
     private final FindResidentByIdQueryHandler findResidentByIdHandler;
+    private final FindMyResidentsQueryHandler findMyResidentsHandler;
     private final PagedResourcesAssembler<ResidentDTO> pagedResourcesAssembler;
 
     public ResidentsController(
@@ -74,6 +78,7 @@ public class ResidentsController {
             RemoveAllergyCommandHandler removeAllergyHandler,
             FindAllResidentsQueryHandler findAllResidentsHandler,
             FindResidentByIdQueryHandler findResidentByIdHandler,
+            FindMyResidentsQueryHandler findMyResidentsHandler,
             PagedResourcesAssembler<ResidentDTO> pagedResourcesAssembler
     ) {
         this.admitResidentHandler = admitResidentHandler;
@@ -86,6 +91,7 @@ public class ResidentsController {
         this.removeAllergyHandler = removeAllergyHandler;
         this.findAllResidentsHandler = findAllResidentsHandler;
         this.findResidentByIdHandler = findResidentByIdHandler;
+        this.findMyResidentsHandler = findMyResidentsHandler;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
@@ -289,6 +295,19 @@ public class ResidentsController {
         var command = new RemoveAllergyCommand(residentId, allergyDescription);
         removeAllergyHandler.handle(command);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Lista os residentes vinculados a um familiar")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
+    })
+    @GetMapping("/family-member/{familyMemberId}")
+    @PreAuthorize("hasAuthority('VIEW_RESIDENT_RECORDS')")
+    public ResponseEntity<List<ResidentDTO>> findResidentsByFamilyMember(@PathVariable UUID familyMemberId) {
+        var query = new FindMyResidentsQuery(familyMemberId);
+        List<ResidentDTO> residents = findMyResidentsHandler.handle(query);
+        return ResponseEntity.ok(residents);
     }
 
     private EntityModel<ResidentDTO> addLinksToResident(ResidentDTO dto) {
