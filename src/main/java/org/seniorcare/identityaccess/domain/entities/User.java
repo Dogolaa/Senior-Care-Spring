@@ -18,6 +18,7 @@ public class User {
     private UUID addressId;
     private HashedPassword password;
     private UUID roleId;
+    private String roleName;
     private Instant createdAt;
     private Instant updatedAt;
     private Instant deletedAt;
@@ -32,6 +33,7 @@ public class User {
         this.addressId = addressId;
         this.password = password;
         this.roleId = roleId;
+        this.roleName = null;
         Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
@@ -39,8 +41,8 @@ public class User {
     }
 
     public User(UUID id, String name, Email email, String phone, Boolean isActive,
-                UUID addressId, HashedPassword password, UUID roleId, Instant createdAt,
-                Instant updatedAt, Instant deletedAt) {
+                UUID addressId, HashedPassword password, UUID roleId, String roleName,
+                Instant createdAt, Instant updatedAt, Instant deletedAt) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -49,6 +51,7 @@ public class User {
         this.addressId = addressId;
         this.password = password;
         this.roleId = roleId;
+        this.roleName = roleName;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
@@ -96,6 +99,10 @@ public class User {
 
     public UUID getRoleId() {
         return roleId;
+    }
+
+    public String getRoleName() {
+        return roleName;
     }
 
 

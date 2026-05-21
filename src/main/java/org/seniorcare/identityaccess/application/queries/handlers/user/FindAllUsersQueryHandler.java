@@ -30,6 +30,7 @@ public class FindAllUsersQueryHandler {
                 user.getEmail().value(),
                 user.getPhone(),
                 user.isActive(),
+                user.getRoleName(),
                 user.getCreatedAt(),
                 user.getUpdatedAt()
         );

@@ -12,15 +12,17 @@ public class UserDTO extends RepresentationModel<UserDTO> {
     private final String email;
     private final String phone;
     private final boolean isActive;
+    private final String role;
     private final Instant createdAt;
     private final Instant updatedAt;
 
-    public UserDTO(UUID id, String name, String email, String phone, boolean isActive, Instant createdAt, Instant updatedAt) {
+    public UserDTO(UUID id, String name, String email, String phone, boolean isActive, String role, Instant createdAt, Instant updatedAt) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.isActive = isActive;
+        this.role = role;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -43,6 +45,10 @@ public class UserDTO extends RepresentationModel<UserDTO> {
 
     public boolean isActive() {
         return isActive;
+    }
+
+    public String getRole() {
+        return role;
     }
 
     public Instant getCreatedAt() {

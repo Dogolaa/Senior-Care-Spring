@@ -41,7 +41,10 @@ public class UpdateUserCommandHandler {
 
         userRepository.save(userToUpdate);
 
-        return toDTO(userToUpdate);
+        User savedUser = userRepository.findById(userToUpdate.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + userToUpdate.getId() + " not found after update."));
+
+        return toDTO(savedUser);
     }
 
     private UserDTO toDTO(User user) {
@@ -51,6 +54,7 @@ public class UpdateUserCommandHandler {
                 user.getEmail().value(),
                 user.getPhone(),
                 user.isActive(),
+                user.getRoleName(),
                 user.getCreatedAt(),
                 user.getUpdatedAt()
         );

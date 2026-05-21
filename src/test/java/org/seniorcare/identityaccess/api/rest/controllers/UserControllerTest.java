@@ -61,7 +61,7 @@ class UserControllerTest {
 
     private UserDTO buildUserDTO(UUID id) {
         return new UserDTO(id, "João Silva", "joao@example.com", "11999999999",
-                true, Instant.now(), Instant.now());
+                true, "USER", Instant.now(), Instant.now());
     }
 
     @Test

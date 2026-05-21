@@ -50,6 +50,7 @@ public class UserMapper {
                 model.getAddressId(),
                 new HashedPassword(model.getPassword()),
                 model.getRole() != null ? model.getRole().getId() : null,
+                model.getRole() != null ? model.getRole().getName() : null,
                 model.getCreatedAt(),
                 model.getUpdatedAt(),
                 model.getDeletedAt()
