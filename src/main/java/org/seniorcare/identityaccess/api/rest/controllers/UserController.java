@@ -4,11 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.seniorcare.health.api.rest.dto.AddPhotoRequest;
 import org.seniorcare.identityaccess.api.rest.dto.user.UpdateUserRequest;
 import org.seniorcare.identityaccess.application.commands.handlers.user.DeleteUserCommandHandler;
 import org.seniorcare.identityaccess.application.commands.handlers.user.UpdateUserCommandHandler;
+import org.seniorcare.identityaccess.application.commands.handlers.user.UpdateUserPhotoCommandHandler;
 import org.seniorcare.identityaccess.application.commands.impl.user.DeleteUserCommand;
 import org.seniorcare.identityaccess.application.commands.impl.user.UpdateUserCommand;
+import org.seniorcare.identityaccess.application.commands.impl.user.UpdateUserPhotoCommand;
 import org.seniorcare.identityaccess.application.dto.user.UserDTO;
 import org.seniorcare.identityaccess.application.queries.handlers.user.FindAllUsersQueryHandler;
 import org.seniorcare.identityaccess.application.queries.handlers.user.FindUserByIdQueryHandler;
@@ -35,15 +38,20 @@ public class UserController {
     
     private final UpdateUserCommandHandler updateHandler;
     private final DeleteUserCommandHandler deleteHandler;
+    private final UpdateUserPhotoCommandHandler updatePhotoHandler;
     private final FindUserByIdQueryHandler findByIdHandler;
     private final FindAllUsersQueryHandler findAllHandler;
     private final PagedResourcesAssembler<UserDTO> pagedResourcesAssembler;
 
     public UserController(UpdateUserCommandHandler updateHandler,
-                          DeleteUserCommandHandler deleteHandler, FindUserByIdQueryHandler findByIdHandler,
-                          FindAllUsersQueryHandler findAllHandler, PagedResourcesAssembler<UserDTO> pagedResourcesAssembler) {
+                          DeleteUserCommandHandler deleteHandler,
+                          UpdateUserPhotoCommandHandler updatePhotoHandler,
+                          FindUserByIdQueryHandler findByIdHandler,
+                          FindAllUsersQueryHandler findAllHandler,
+                          PagedResourcesAssembler<UserDTO> pagedResourcesAssembler) {
         this.updateHandler = updateHandler;
         this.deleteHandler = deleteHandler;
+        this.updatePhotoHandler = updatePhotoHandler;
         this.findByIdHandler = findByIdHandler;
         this.findAllHandler = findAllHandler;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
@@ -104,6 +112,15 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+
+    @Operation(summary = "Atualiza a foto de perfil de um usuário")
+    @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Foto atualizada com sucesso"), @ApiResponse(responseCode = "404", description = "Usuário não encontrado")})
+    @PatchMapping("/{id}/photo")
+    @PreAuthorize("hasAuthority('READ_USER')")
+    public ResponseEntity<Void> updatePhoto(@PathVariable UUID id, @RequestBody AddPhotoRequest request) {
+        updatePhotoHandler.handle(new UpdateUserPhotoCommand(id, request.getPhotoUrl()));
+        return ResponseEntity.noContent().build();
+    }
 
     private EntityModel<UserDTO> addLinksToUser(UserDTO userDTO) {
         return EntityModel.of(userDTO,

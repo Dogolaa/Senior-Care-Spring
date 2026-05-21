@@ -5,8 +5,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.seniorcare.health.api.rest.dto.AddPhotoRequest;
 import org.seniorcare.health.api.rest.dto.medication_record.LogMedicationAdministrationRequest;
+import org.seniorcare.health.application.commands.handlers.AddPhotoToMedicationRecordCommandHandler;
 import org.seniorcare.health.application.commands.handlers.LogMedicationAdministrationCommandHandler;
+import org.seniorcare.health.application.commands.impl.AddPhotoToMedicationRecordCommand;
 import org.seniorcare.health.application.commands.impl.LogMedicationAdministrationCommand;
 import org.seniorcare.health.application.queries.dto.MedicationRecordResponse;
 import org.seniorcare.health.application.queries.handlers.FindMedicationRecordsByResidentIdQueryHandler;
@@ -27,11 +30,14 @@ public class MedicationRecordController {
 
     private final LogMedicationAdministrationCommandHandler logMedicationHandler;
     private final FindMedicationRecordsByResidentIdQueryHandler findMedicationRecordsHandler;
+    private final AddPhotoToMedicationRecordCommandHandler addPhotoHandler;
 
     public MedicationRecordController(LogMedicationAdministrationCommandHandler logMedicationHandler,
-                                       FindMedicationRecordsByResidentIdQueryHandler findMedicationRecordsHandler) {
+                                       FindMedicationRecordsByResidentIdQueryHandler findMedicationRecordsHandler,
+                                       AddPhotoToMedicationRecordCommandHandler addPhotoHandler) {
         this.logMedicationHandler = logMedicationHandler;
         this.findMedicationRecordsHandler = findMedicationRecordsHandler;
+        this.addPhotoHandler = addPhotoHandler;
     }
 
     @Operation(summary = "Registra a administração de um medicamento a um residente")
@@ -69,10 +75,24 @@ public class MedicationRecordController {
             @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
     })
     @GetMapping("/resident/{residentId}")
-    @PreAuthorize("hasAuthority('MANAGE_HEALTH_RECORDS')")
+    @PreAuthorize("hasAuthority('MANAGE_HEALTH_RECORDS') or hasAuthority('VIEW_RESIDENT_RECORDS')")
     public ResponseEntity<List<MedicationRecordResponse>> findByResident(@PathVariable UUID residentId) {
         var query = new FindMedicationRecordsByResidentIdQuery(residentId);
         List<MedicationRecordResponse> records = findMedicationRecordsHandler.handle(query);
         return ResponseEntity.ok(records);
+    }
+
+    @Operation(summary = "Adiciona uma foto a um registro de administração de medicamento")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Foto adicionada com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Registro não encontrado"),
+            @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
+    })
+    @PostMapping("/{id}/photos")
+    @PreAuthorize("hasAuthority('MANAGE_HEALTH_RECORDS')")
+    public ResponseEntity<Void> addPhoto(@PathVariable UUID id,
+                                          @Valid @RequestBody AddPhotoRequest request) {
+        addPhotoHandler.handle(new AddPhotoToMedicationRecordCommand(id, request.getPhotoUrl()));
+        return ResponseEntity.ok().build();
     }
 }

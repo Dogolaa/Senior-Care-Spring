@@ -44,6 +44,12 @@ public class UserModel extends Auditable implements UserDetails, AuthenticatedPr
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
     private RoleModel role;
 
+    @Column(name = "photo_url")
+    private String photoUrl;
+
+    @Column(name = "must_change_password", nullable = false)
+    private boolean mustChangePassword;
+
     @Column(name = "deleted_at")
     private Instant deletedAt;
 
@@ -107,6 +113,18 @@ public class UserModel extends Auditable implements UserDetails, AuthenticatedPr
         this.role = role;
     }
 
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
+    public void setMustChangePassword(boolean mustChangePassword) {
+        this.mustChangePassword = mustChangePassword;
+    }
+
     public Instant getDeletedAt() {
         return deletedAt;
     }
@@ -122,6 +140,11 @@ public class UserModel extends Auditable implements UserDetails, AuthenticatedPr
     @Override
     public String getRoleName() {
         return role.getName();
+    }
+
+    @Override
+    public boolean isMustChangePassword() {
+        return mustChangePassword;
     }
 
     @Override

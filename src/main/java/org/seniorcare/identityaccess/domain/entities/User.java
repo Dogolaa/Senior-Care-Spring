@@ -19,6 +19,8 @@ public class User {
     private HashedPassword password;
     private UUID roleId;
     private String roleName;
+    private String photoUrl;
+    private boolean mustChangePassword;
     private Instant createdAt;
     private Instant updatedAt;
     private Instant deletedAt;
@@ -34,6 +36,8 @@ public class User {
         this.password = password;
         this.roleId = roleId;
         this.roleName = null;
+        this.photoUrl = null;
+        this.mustChangePassword = false;
         Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
@@ -42,7 +46,7 @@ public class User {
 
     public User(UUID id, String name, Email email, String phone, Boolean isActive,
                 UUID addressId, HashedPassword password, UUID roleId, String roleName,
-                Instant createdAt, Instant updatedAt, Instant deletedAt) {
+                String photoUrl, boolean mustChangePassword, Instant createdAt, Instant updatedAt, Instant deletedAt) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -52,6 +56,8 @@ public class User {
         this.password = password;
         this.roleId = roleId;
         this.roleName = roleName;
+        this.photoUrl = photoUrl;
+        this.mustChangePassword = mustChangePassword;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
@@ -105,6 +111,29 @@ public class User {
         return roleName;
     }
 
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public boolean isMustChangePassword() {
+        return mustChangePassword;
+    }
+
+    public void requirePasswordChange() {
+        this.mustChangePassword = true;
+        this.updatedAt = Instant.now();
+    }
+
+    public void markPasswordChanged() {
+        this.mustChangePassword = false;
+        this.updatedAt = Instant.now();
+    }
+
+    public void updatePhoto(String photoUrl) {
+        this.photoUrl = photoUrl;
+        this.updatedAt = Instant.now();
+    }
+
 
     public static User create(String name, String email, String phone, UUID addressId, HashedPassword hashedPassword, UUID roleId) {
         if (hashedPassword == null) {
@@ -146,6 +175,11 @@ public class User {
         this.addressId = newAddressId;
         this.roleId = newRoleId;
 
+        this.updatedAt = Instant.now();
+    }
+
+    public void deactivate() {
+        this.isActive = false;
         this.updatedAt = Instant.now();
     }
 

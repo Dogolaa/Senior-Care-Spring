@@ -1,10 +1,10 @@
 package org.seniorcare.health.infrastructure.persistence.jpa.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -24,60 +24,35 @@ public class MedicationRecordModel {
     private LocalDateTime administrationDate;
 
     @Column(nullable = false)
-    private UUID administeredById; // Nurse ID
+    private UUID administeredById;
 
     @Column(nullable = false)
     private String dose;
 
+    @OneToMany(mappedBy = "medicationRecord", fetch = FetchType.EAGER)
+    private List<MedicationRecordPhotoModel> photos = new ArrayList<>();
+
     public MedicationRecordModel() {
     }
 
-    // Getters and Setters
-    public UUID getId() {
-        return id;
-    }
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+    public UUID getResidentId() { return residentId; }
+    public void setResidentId(UUID residentId) { this.residentId = residentId; }
 
-    public UUID getResidentId() {
-        return residentId;
-    }
+    public UUID getMedicationId() { return medicationId; }
+    public void setMedicationId(UUID medicationId) { this.medicationId = medicationId; }
 
-    public void setResidentId(UUID residentId) {
-        this.residentId = residentId;
-    }
+    public LocalDateTime getAdministrationDate() { return administrationDate; }
+    public void setAdministrationDate(LocalDateTime administrationDate) { this.administrationDate = administrationDate; }
 
-    public UUID getMedicationId() {
-        return medicationId;
-    }
+    public UUID getAdministeredById() { return administeredById; }
+    public void setAdministeredById(UUID administeredById) { this.administeredById = administeredById; }
 
-    public void setMedicationId(UUID medicationId) {
-        this.medicationId = medicationId;
-    }
+    public String getDose() { return dose; }
+    public void setDose(String dose) { this.dose = dose; }
 
-    public LocalDateTime getAdministrationDate() {
-        return administrationDate;
-    }
-
-    public void setAdministrationDate(LocalDateTime administrationDate) {
-        this.administrationDate = administrationDate;
-    }
-
-    public UUID getAdministeredById() {
-        return administeredById;
-    }
-
-    public void setAdministeredById(UUID administeredById) {
-        this.administeredById = administeredById;
-    }
-
-    public String getDose() {
-        return dose;
-    }
-
-    public void setDose(String dose) {
-        this.dose = dose;
-    }
+    public List<MedicationRecordPhotoModel> getPhotos() { return photos; }
+    public void setPhotos(List<MedicationRecordPhotoModel> photos) { this.photos = photos; }
 }

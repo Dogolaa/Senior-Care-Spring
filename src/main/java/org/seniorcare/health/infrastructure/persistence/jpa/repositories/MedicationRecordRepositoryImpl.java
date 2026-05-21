@@ -4,8 +4,11 @@ import org.seniorcare.health.domain.entities.MedicationRecord;
 import org.seniorcare.health.domain.repositories.IMedicationRecordRepository;
 import org.seniorcare.health.infrastructure.persistence.jpa.mappers.MedicationRecordPersistenceMapper;
 import org.seniorcare.health.infrastructure.persistence.jpa.models.MedicationRecordModel;
+import org.seniorcare.health.infrastructure.persistence.jpa.models.MedicationRecordPhotoModel;
+import org.seniorcare.shared.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,10 +18,14 @@ import java.util.stream.Collectors;
 public class MedicationRecordRepositoryImpl implements IMedicationRecordRepository {
 
     private final SpringDataMedicationRecordRepository springDataRepository;
+    private final SpringDataMedicationRecordPhotoRepository photoRepository;
     private final MedicationRecordPersistenceMapper mapper;
 
-    public MedicationRecordRepositoryImpl(SpringDataMedicationRecordRepository springDataRepository, MedicationRecordPersistenceMapper mapper) {
+    public MedicationRecordRepositoryImpl(SpringDataMedicationRecordRepository springDataRepository,
+                                           SpringDataMedicationRecordPhotoRepository photoRepository,
+                                           MedicationRecordPersistenceMapper mapper) {
         this.springDataRepository = springDataRepository;
+        this.photoRepository = photoRepository;
         this.mapper = mapper;
     }
 
@@ -40,5 +47,18 @@ public class MedicationRecordRepositoryImpl implements IMedicationRecordReposito
                 .stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void addPhoto(UUID medicationRecordId, String photoUrl) {
+        MedicationRecordModel record = springDataRepository.findById(medicationRecordId)
+                .orElseThrow(() -> new ResourceNotFoundException("Medication record not found: " + medicationRecordId));
+
+        MedicationRecordPhotoModel photo = new MedicationRecordPhotoModel();
+        photo.setId(UUID.randomUUID());
+        photo.setMedicationRecord(record);
+        photo.setPhotoUrl(photoUrl);
+        photo.setUploadedAt(Instant.now());
+        photoRepository.save(photo);
     }
 }

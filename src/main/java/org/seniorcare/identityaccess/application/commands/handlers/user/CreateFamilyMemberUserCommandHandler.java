@@ -60,6 +60,7 @@ public class CreateFamilyMemberUserCommandHandler {
                 hashedPasswordVO,
                 familyMemberRole.getId()
         );
+        newUser.requirePasswordChange();
 
         userRepository.save(newUser);
 

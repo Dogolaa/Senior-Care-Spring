@@ -47,6 +47,6 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public Page<User> findAll(Pageable pageable) {
-        return this.jpaRepository.findAll(pageable).map(userMapper::toEntity);
+        return this.jpaRepository.findAllOrderedByActiveFirst(pageable).map(userMapper::toEntity);
     }
 }

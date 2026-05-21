@@ -10,4 +10,5 @@ public interface IMedicationRecordRepository {
     MedicationRecord save(MedicationRecord medicationRecord);
     Optional<MedicationRecord> findById(UUID id);
     List<MedicationRecord> findByResidentId(UUID residentId);
+    void addPhoto(UUID medicationRecordId, String photoUrl);
 }

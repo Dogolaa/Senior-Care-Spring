@@ -33,6 +33,8 @@ public class UserMapper {
         model.setAddressId(entity.getAddressId());
         model.setPassword(entity.getPassword().value());
         model.setRole(roleModel);
+        model.setPhotoUrl(entity.getPhotoUrl());
+        model.setMustChangePassword(entity.isMustChangePassword());
         model.setDeletedAt(entity.getDeletedAt());
 
         return model;
@@ -51,6 +53,8 @@ public class UserMapper {
                 new HashedPassword(model.getPassword()),
                 model.getRole() != null ? model.getRole().getId() : null,
                 model.getRole() != null ? model.getRole().getName() : null,
+                model.getPhotoUrl(),
+                model.isMustChangePassword(),
                 model.getCreatedAt(),
                 model.getUpdatedAt(),
                 model.getDeletedAt()

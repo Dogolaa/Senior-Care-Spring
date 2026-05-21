@@ -55,6 +55,7 @@ public class UpdateUserCommandHandler {
                 user.getPhone(),
                 user.isActive(),
                 user.getRoleName(),
+                user.getPhotoUrl(),
                 user.getCreatedAt(),
                 user.getUpdatedAt()
         );

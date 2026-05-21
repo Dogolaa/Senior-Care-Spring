@@ -37,7 +37,8 @@ public class FindMedicationRecordsByResidentIdQueryHandler {
                             medicationName,
                             record.getAdministrationDate(),
                             record.getAdministeredById(),
-                            record.getDose());
+                            record.getDose(),
+                            record.getPhotoUrls());
                 })
                 .collect(Collectors.toList());
     }

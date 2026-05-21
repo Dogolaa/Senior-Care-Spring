@@ -4,14 +4,19 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.seniorcare.identityaccess.api.rest.dto.auth.ChangePasswordRequest;
 import org.seniorcare.identityaccess.api.rest.dto.auth.LoginRequest;
 import org.seniorcare.identityaccess.api.rest.dto.auth.LoginResponse;
 import org.seniorcare.identityaccess.api.rest.dto.user.CreateUserRequest;
+import org.seniorcare.identityaccess.application.commands.handlers.user.ChangePasswordCommandHandler;
 import org.seniorcare.identityaccess.application.commands.handlers.user.CreateUserCommandHandler;
+import org.seniorcare.identityaccess.application.commands.impl.user.ChangePasswordCommand;
 import org.seniorcare.identityaccess.application.commands.impl.user.CreateUserCommand;
+import org.seniorcare.identityaccess.application.security.AuthenticatedPrincipal;
 import org.seniorcare.identityaccess.application.services.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,11 +32,14 @@ import java.util.UUID;
 public class AuthController {
 
     private final CreateUserCommandHandler createHandler;
-    private final AuthenticationService authenticationService; // <-- ADICIONAR
+    private final AuthenticationService authenticationService;
+    private final ChangePasswordCommandHandler changePasswordHandler;
 
-    public AuthController(CreateUserCommandHandler createHandler, AuthenticationService authenticationService) {
+    public AuthController(CreateUserCommandHandler createHandler, AuthenticationService authenticationService,
+                          ChangePasswordCommandHandler changePasswordHandler) {
         this.createHandler = createHandler;
-        this.authenticationService = authenticationService; // <-- ADICIONAR
+        this.authenticationService = authenticationService;
+        this.changePasswordHandler = changePasswordHandler;
     }
 
     @Operation(summary = "Registra um novo usuário")
@@ -64,5 +72,18 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = authenticationService.login(request);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Altera a senha do usuário autenticado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Senha alterada com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Não autenticado")
+    })
+    @PostMapping("/change-password")
+    public ResponseEntity<Void> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            @AuthenticationPrincipal AuthenticatedPrincipal principal) {
+        changePasswordHandler.handle(new ChangePasswordCommand(principal.getId(), request.newPassword()));
+        return ResponseEntity.noContent().build();
     }
 }

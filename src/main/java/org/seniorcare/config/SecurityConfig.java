@@ -59,6 +59,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of("http://localhost:3000"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
+        configuration.setExposedHeaders(List.of("Location"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 
@@ -75,7 +76,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/api/v1/auth/**",
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/register",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**"
                         ).permitAll()

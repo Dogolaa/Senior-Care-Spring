@@ -69,7 +69,7 @@ public class PrescriptionController {
             @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
     })
     @GetMapping("/health-record/{healthRecordId}")
-    @PreAuthorize("hasAuthority('MANAGE_HEALTH_RECORDS')")
+    @PreAuthorize("hasAuthority('MANAGE_HEALTH_RECORDS') or hasAuthority('VIEW_RESIDENT_RECORDS')")
     public ResponseEntity<List<PrescriptionResponse>> findByHealthRecord(@PathVariable UUID healthRecordId) {
         var query = new FindPrescriptionsByHealthRecordIdQuery(healthRecordId);
         List<PrescriptionResponse> prescriptions = findPrescriptionsQueryHandler.handle(query);

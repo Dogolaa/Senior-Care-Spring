@@ -31,6 +31,7 @@ public class FindAllUsersQueryHandler {
                 user.getPhone(),
                 user.isActive(),
                 user.getRoleName(),
+                user.getPhotoUrl(),
                 user.getCreatedAt(),
                 user.getUpdatedAt()
         );

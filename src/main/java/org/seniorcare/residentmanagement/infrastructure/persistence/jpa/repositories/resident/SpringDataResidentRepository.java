@@ -17,13 +17,11 @@ public interface SpringDataResidentRepository extends JpaRepository<ResidentMode
 
     @Query("SELECT r FROM ResidentModel r " +
             "LEFT JOIN FETCH r.familyLinks fl " +
-            "LEFT JOIN FETCH r.allergies a " +
             "WHERE r.id = :id")
     Optional<ResidentModel> findByIdWithDetails(@Param("id") UUID id);
 
     @Query("SELECT DISTINCT r FROM ResidentModel r " +
             "LEFT JOIN FETCH r.familyLinks fl " +
-            "LEFT JOIN FETCH r.allergies " +
             "WHERE fl.familyMemberId = :userId AND fl.deletedAt IS NULL")
     List<ResidentModel> findByFamilyMemberId(@Param("userId") UUID userId);
 }

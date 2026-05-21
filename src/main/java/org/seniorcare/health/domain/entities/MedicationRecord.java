@@ -1,6 +1,8 @@
 package org.seniorcare.health.domain.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class MedicationRecord {
@@ -11,6 +13,7 @@ public class MedicationRecord {
     private LocalDateTime administrationDate;
     private UUID administeredById;
     private String dose;
+    private List<String> photoUrls = new ArrayList<>();
 
     public MedicationRecord() {
     }
@@ -70,5 +73,13 @@ public class MedicationRecord {
 
     public void setDose(String dose) {
         this.dose = dose;
+    }
+
+    public List<String> getPhotoUrls() {
+        return photoUrls;
+    }
+
+    public void setPhotoUrls(List<String> photoUrls) {
+        this.photoUrls = photoUrls;
     }
 }

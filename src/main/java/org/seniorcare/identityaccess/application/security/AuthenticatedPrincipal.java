@@ -7,4 +7,5 @@ public interface AuthenticatedPrincipal {
     String getName();
     String getEmail();
     String getRoleName();
+    boolean isMustChangePassword();
 }

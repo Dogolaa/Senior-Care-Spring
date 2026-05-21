@@ -38,7 +38,8 @@ public class AuthenticationService {
                 principal.getId(),
                 principal.getName(),
                 principal.getEmail(),
-                principal.getRoleName()
+                principal.getRoleName(),
+                principal.isMustChangePassword()
         );
     }
 }
