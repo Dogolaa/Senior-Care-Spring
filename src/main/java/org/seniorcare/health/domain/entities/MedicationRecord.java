@@ -1,6 +1,6 @@
 package org.seniorcare.health.domain.entities;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class MedicationRecord {
@@ -8,14 +8,14 @@ public class MedicationRecord {
     private UUID id;
     private UUID residentId;
     private UUID medicationId;
-    private LocalDate administrationDate;
+    private LocalDateTime administrationDate;
     private UUID administeredById;
     private String dose;
 
     public MedicationRecord() {
     }
 
-    public MedicationRecord(UUID residentId, UUID medicationId, LocalDate administrationDate, UUID administeredById, String dose) {
+    public MedicationRecord(UUID residentId, UUID medicationId, LocalDateTime administrationDate, UUID administeredById, String dose) {
         this.id = UUID.randomUUID();
         this.residentId = residentId;
         this.medicationId = medicationId;
@@ -48,11 +48,11 @@ public class MedicationRecord {
         this.medicationId = medicationId;
     }
 
-    public LocalDate getAdministrationDate() {
+    public LocalDateTime getAdministrationDate() {
         return administrationDate;
     }
 
-    public void setAdministrationDate(LocalDate administrationDate) {
+    public void setAdministrationDate(LocalDateTime administrationDate) {
         this.administrationDate = administrationDate;
     }
 

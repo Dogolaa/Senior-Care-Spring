@@ -2,7 +2,7 @@ package org.seniorcare.health.api.rest.dto.medication_record;
 
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class LogMedicationAdministrationRequest {
@@ -14,7 +14,7 @@ public class LogMedicationAdministrationRequest {
     private UUID medicationId;
 
     @NotNull
-    private LocalDate administrationDate;
+    private LocalDateTime administrationDate;
 
     @NotNull
     private UUID administeredById;
@@ -38,11 +38,11 @@ public class LogMedicationAdministrationRequest {
         this.medicationId = medicationId;
     }
 
-    public LocalDate getAdministrationDate() {
+    public LocalDateTime getAdministrationDate() {
         return administrationDate;
     }
 
-    public void setAdministrationDate(LocalDate administrationDate) {
+    public void setAdministrationDate(LocalDateTime administrationDate) {
         this.administrationDate = administrationDate;
     }
 

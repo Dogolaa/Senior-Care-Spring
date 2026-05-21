@@ -1,6 +1,6 @@
 package org.seniorcare.health.application.queries.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record MedicationRecordResponse(
@@ -8,7 +8,7 @@ public record MedicationRecordResponse(
         UUID residentId,
         UUID medicationId,
         String medicationCommercialName,
-        LocalDate administrationDate,
+        LocalDateTime administrationDate,
         UUID administeredById,
         String dose
 ) {

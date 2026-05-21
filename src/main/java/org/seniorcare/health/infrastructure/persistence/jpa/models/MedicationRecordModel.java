@@ -4,7 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -21,7 +21,7 @@ public class MedicationRecordModel {
     private UUID medicationId;
 
     @Column(nullable = false)
-    private LocalDate administrationDate;
+    private LocalDateTime administrationDate;
 
     @Column(nullable = false)
     private UUID administeredById; // Nurse ID
@@ -57,11 +57,11 @@ public class MedicationRecordModel {
         this.medicationId = medicationId;
     }
 
-    public LocalDate getAdministrationDate() {
+    public LocalDateTime getAdministrationDate() {
         return administrationDate;
     }
 
-    public void setAdministrationDate(LocalDate administrationDate) {
+    public void setAdministrationDate(LocalDateTime administrationDate) {
         this.administrationDate = administrationDate;
     }
 
