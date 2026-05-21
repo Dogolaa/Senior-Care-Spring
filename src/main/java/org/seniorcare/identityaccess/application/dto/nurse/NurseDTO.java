@@ -1,5 +1,6 @@
 package org.seniorcare.identityaccess.application.dto.nurse;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.time.Instant;
@@ -66,6 +67,7 @@ public class NurseDTO extends RepresentationModel<NurseDTO> {
         return shift;
     }
 
+    @JsonProperty("isActive")
     public boolean isActive() {
         return isActive;
     }

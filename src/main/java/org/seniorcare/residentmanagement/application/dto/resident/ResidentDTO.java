@@ -1,5 +1,6 @@
 package org.seniorcare.residentmanagement.application.dto.resident;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.time.Instant;
@@ -72,6 +73,7 @@ public class ResidentDTO extends RepresentationModel<ResidentDTO> {
         return bloodType;
     }
 
+    @JsonProperty("isActive")
     public boolean isActive() {
         return isActive;
     }

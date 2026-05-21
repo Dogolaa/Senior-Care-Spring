@@ -1,5 +1,6 @@
 package org.seniorcare.identityaccess.application.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.time.Instant;
@@ -33,6 +34,7 @@ public class UserDTO extends RepresentationModel<UserDTO> {
     public String getName() { return name; }
     public String getEmail() { return email; }
     public String getPhone() { return phone; }
+    @JsonProperty("isActive")
     public boolean isActive() { return isActive; }
     public String getRole() { return role; }
     public String getPhotoUrl() { return photoUrl; }

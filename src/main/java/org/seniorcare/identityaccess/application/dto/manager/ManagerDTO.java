@@ -1,5 +1,6 @@
 package org.seniorcare.identityaccess.application.dto.manager;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.time.Instant;
@@ -60,6 +61,7 @@ public class ManagerDTO extends RepresentationModel<ManagerDTO> {
         return shift;
     }
 
+    @JsonProperty("isActive")
     public boolean isActive() {
         return isActive;
     }
