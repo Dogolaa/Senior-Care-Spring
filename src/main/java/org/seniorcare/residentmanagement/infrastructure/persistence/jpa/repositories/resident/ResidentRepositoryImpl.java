@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -54,5 +55,12 @@ public class ResidentRepositoryImpl implements IResidentsRepository {
     @Override
     public Page<Resident> findAll(Pageable pageable) {
         return this.jpaRepository.findAll(pageable).map(residentMapper::toEntity);
+    }
+
+    @Override
+    public List<Resident> findByFamilyMemberId(UUID userId) {
+        return this.jpaRepository.findByFamilyMemberId(userId).stream()
+                .map(residentMapper::toEntity)
+                .toList();
     }
 }

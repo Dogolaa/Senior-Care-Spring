@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,4 +20,10 @@ public interface SpringDataResidentRepository extends JpaRepository<ResidentMode
             "LEFT JOIN FETCH r.allergies a " +
             "WHERE r.id = :id")
     Optional<ResidentModel> findByIdWithDetails(@Param("id") UUID id);
+
+    @Query("SELECT DISTINCT r FROM ResidentModel r " +
+            "LEFT JOIN FETCH r.familyLinks fl " +
+            "LEFT JOIN FETCH r.allergies " +
+            "WHERE fl.familyMemberId = :userId AND fl.deletedAt IS NULL")
+    List<ResidentModel> findByFamilyMemberId(@Param("userId") UUID userId);
 }
