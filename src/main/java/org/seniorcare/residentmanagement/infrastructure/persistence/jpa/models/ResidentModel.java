@@ -1,6 +1,7 @@
 package org.seniorcare.residentmanagement.infrastructure.persistence.jpa.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.SQLRestriction;
 import org.seniorcare.shared.infrastructure.persistence.Auditable;
 
@@ -34,6 +35,7 @@ public class ResidentModel extends Auditable {
             orphanRemoval = true,
             fetch = FetchType.LAZY
     )
+    @BatchSize(size = 25)
     private List<FamilyLinkModel> familyLinks = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.LAZY)
@@ -42,6 +44,7 @@ public class ResidentModel extends Auditable {
             joinColumns = @JoinColumn(name = "resident_id")
     )
     @Column(name = "allergy_description")
+    @BatchSize(size = 25)
     private List<String> allergies = new ArrayList<>();
 
     @Column(name = "name", nullable = false)
