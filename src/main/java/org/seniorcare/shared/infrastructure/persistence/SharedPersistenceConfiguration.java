@@ -11,13 +11,17 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "org.seniorcare.identityaccess.infrastructure.persistence.jpa.repositories",
         "org.seniorcare.health.infrastructure.persistence.jpa.repositories",
         "org.seniorcare.residentmanagement.infrastructure.persistence.jpa.repositories",
-        "org.seniorcare.communication.infrastructure.persistence.jpa.repositories"
+        "org.seniorcare.communication.infrastructure.persistence.jpa.repositories",
+        "org.seniorcare.incidents.infrastructure.persistence.jpa.repositories",
+        "org.seniorcare.careplan.infrastructure.persistence.jpa.repositories"
 })
 @EntityScan(basePackages = {
         "org.seniorcare.identityaccess.infrastructure.persistence.jpa.models",
         "org.seniorcare.health.infrastructure.persistence.jpa.models",
         "org.seniorcare.residentmanagement.infrastructure.persistence.jpa.models",
-        "org.seniorcare.communication.infrastructure.persistence.jpa.models"
+        "org.seniorcare.communication.infrastructure.persistence.jpa.models",
+        "org.seniorcare.incidents.infrastructure.persistence.jpa.models",
+        "org.seniorcare.careplan.infrastructure.persistence.jpa.models"
 })
 public class SharedPersistenceConfiguration {
 }
