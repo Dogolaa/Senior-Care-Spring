@@ -1,6 +1,7 @@
 package org.seniorcare.health.infrastructure.persistence.jpa.repositories;
 
 import org.seniorcare.health.domain.aggregates.HealthRecord;
+import org.seniorcare.health.domain.entities.HealthRecordPhoto;
 import org.seniorcare.health.domain.repositories.IHealthRecordRepository;
 import org.seniorcare.health.infrastructure.persistence.jpa.mappers.HealthRecordMapper;
 import org.seniorcare.health.infrastructure.persistence.jpa.models.HealthRecordHistoryModel;
@@ -9,7 +10,6 @@ import org.seniorcare.health.infrastructure.persistence.jpa.models.HealthRecordP
 import org.seniorcare.shared.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Repository;
 
-import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,16 +51,16 @@ public class HealthRecordRepositoryImpl implements IHealthRecordRepository {
     }
 
     @Override
-    public void addPhotoToHistory(UUID healthRecordHistoryId, String photoUrl) {
+    public void addPhotoToHistory(UUID healthRecordHistoryId, HealthRecordPhoto photo) {
         HealthRecordHistoryModel history = historyJpaRepository.findById(healthRecordHistoryId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Health record history not found: " + healthRecordHistoryId));
 
-        HealthRecordPhotoModel photo = new HealthRecordPhotoModel();
-        photo.setId(UUID.randomUUID());
-        photo.setHealthRecordHistory(history);
-        photo.setPhotoUrl(photoUrl);
-        photo.setUploadedAt(Instant.now());
-        photoJpaRepository.save(photo);
+        HealthRecordPhotoModel photoModel = new HealthRecordPhotoModel();
+        photoModel.setId(photo.getId());
+        photoModel.setHealthRecordHistory(history);
+        photoModel.setPhotoUrl(photo.getPhotoUrl());
+        photoModel.setUploadedAt(photo.getUploadedAt());
+        photoJpaRepository.save(photoModel);
     }
 }

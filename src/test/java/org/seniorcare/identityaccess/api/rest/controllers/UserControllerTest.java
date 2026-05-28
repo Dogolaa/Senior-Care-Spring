@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.seniorcare.config.SecurityConfig;
 import org.seniorcare.identityaccess.application.commands.handlers.user.DeleteUserCommandHandler;
 import org.seniorcare.identityaccess.application.commands.handlers.user.UpdateUserCommandHandler;
+import org.seniorcare.identityaccess.application.commands.handlers.user.UpdateUserPhotoCommandHandler;
 import org.seniorcare.identityaccess.application.dto.user.UserDTO;
 import org.seniorcare.identityaccess.application.queries.handlers.user.FindAllUsersQueryHandler;
 import org.seniorcare.identityaccess.application.queries.handlers.user.FindUserByIdQueryHandler;
@@ -48,6 +49,9 @@ class UserControllerTest {
     private DeleteUserCommandHandler deleteHandler;
 
     @MockBean
+    private UpdateUserPhotoCommandHandler updatePhotoHandler;
+
+    @MockBean
     private FindUserByIdQueryHandler findByIdHandler;
 
     @MockBean
@@ -61,7 +65,7 @@ class UserControllerTest {
 
     private UserDTO buildUserDTO(UUID id) {
         return new UserDTO(id, "João Silva", "joao@example.com", "11999999999",
-                true, "USER", Instant.now(), Instant.now());
+                true, "USER", null, Instant.now(), Instant.now());
     }
 
     @Test

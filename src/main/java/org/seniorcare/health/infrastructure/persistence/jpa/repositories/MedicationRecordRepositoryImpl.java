@@ -1,6 +1,7 @@
 package org.seniorcare.health.infrastructure.persistence.jpa.repositories;
 
 import org.seniorcare.health.domain.entities.MedicationRecord;
+import org.seniorcare.health.domain.entities.MedicationRecordPhoto;
 import org.seniorcare.health.domain.repositories.IMedicationRecordRepository;
 import org.seniorcare.health.infrastructure.persistence.jpa.mappers.MedicationRecordPersistenceMapper;
 import org.seniorcare.health.infrastructure.persistence.jpa.models.MedicationRecordModel;
@@ -8,7 +9,6 @@ import org.seniorcare.health.infrastructure.persistence.jpa.models.MedicationRec
 import org.seniorcare.shared.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Repository;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,15 +50,15 @@ public class MedicationRecordRepositoryImpl implements IMedicationRecordReposito
     }
 
     @Override
-    public void addPhoto(UUID medicationRecordId, String photoUrl) {
+    public void addPhoto(UUID medicationRecordId, MedicationRecordPhoto photo) {
         MedicationRecordModel record = springDataRepository.findById(medicationRecordId)
                 .orElseThrow(() -> new ResourceNotFoundException("Medication record not found: " + medicationRecordId));
 
-        MedicationRecordPhotoModel photo = new MedicationRecordPhotoModel();
-        photo.setId(UUID.randomUUID());
-        photo.setMedicationRecord(record);
-        photo.setPhotoUrl(photoUrl);
-        photo.setUploadedAt(Instant.now());
-        photoRepository.save(photo);
+        MedicationRecordPhotoModel photoModel = new MedicationRecordPhotoModel();
+        photoModel.setId(photo.getId());
+        photoModel.setMedicationRecord(record);
+        photoModel.setPhotoUrl(photo.getPhotoUrl());
+        photoModel.setUploadedAt(photo.getUploadedAt());
+        photoRepository.save(photoModel);
     }
 }

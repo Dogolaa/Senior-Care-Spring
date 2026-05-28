@@ -2,6 +2,7 @@ package org.seniorcare.health.domain.aggregates;
 
 import org.seniorcare.health.domain.entities.HealthRecordHistory;
 import org.seniorcare.health.domain.vo.VitalSignsSource;
+import org.seniorcare.shared.domain.Default;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.UUID;
 
 public class HealthRecord {
 
-    private UUID id;
+    private final UUID id;
     private UUID residentId;
     private UUID updatedById;
     private Float height;
@@ -21,10 +22,7 @@ public class HealthRecord {
     private Float saturation;
     private Float imc;
     private LocalDate lastUpdated;
-    private List<HealthRecordHistory> history = new ArrayList<>();
-
-    public HealthRecord() {
-    }
+    private List<HealthRecordHistory> history;
 
     public HealthRecord(UUID residentId, UUID updatedById, Float height, Float weight, String bloodPressure,
             Integer heartRate, Float temperature, Float saturation) {
@@ -39,7 +37,26 @@ public class HealthRecord {
         this.saturation = saturation;
         this.imc = calculateImc(weight, height);
         this.lastUpdated = LocalDate.now();
+        this.history = new ArrayList<>();
         addHistoryEntry(VitalSignsSource.MANUAL);
+    }
+
+    @Default
+    public HealthRecord(UUID id, UUID residentId, UUID updatedById, Float height, Float weight,
+            String bloodPressure, Integer heartRate, Float temperature, Float saturation,
+            Float imc, LocalDate lastUpdated, List<HealthRecordHistory> history) {
+        this.id = id;
+        this.residentId = residentId;
+        this.updatedById = updatedById;
+        this.height = height;
+        this.weight = weight;
+        this.bloodPressure = bloodPressure;
+        this.heartRate = heartRate;
+        this.temperature = temperature;
+        this.saturation = saturation;
+        this.imc = imc;
+        this.lastUpdated = lastUpdated;
+        this.history = history != null ? history : new ArrayList<>();
     }
 
     public void update(UUID updatedById, Float height, Float weight, String bloodPressure, Integer heartRate,
@@ -94,95 +111,47 @@ public class HealthRecord {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
     public UUID getResidentId() {
         return residentId;
-    }
-
-    public void setResidentId(UUID residentId) {
-        this.residentId = residentId;
     }
 
     public UUID getUpdatedById() {
         return updatedById;
     }
 
-    public void setUpdatedById(UUID updatedById) {
-        this.updatedById = updatedById;
-    }
-
     public Float getHeight() {
         return height;
-    }
-
-    public void setHeight(Float height) {
-        this.height = height;
     }
 
     public Float getWeight() {
         return weight;
     }
 
-    public void setWeight(Float weight) {
-        this.weight = weight;
-    }
-
     public String getBloodPressure() {
         return bloodPressure;
-    }
-
-    public void setBloodPressure(String bloodPressure) {
-        this.bloodPressure = bloodPressure;
     }
 
     public Integer getHeartRate() {
         return heartRate;
     }
 
-    public void setHeartRate(Integer heartRate) {
-        this.heartRate = heartRate;
-    }
-
     public Float getTemperature() {
         return temperature;
-    }
-
-    public void setTemperature(Float temperature) {
-        this.temperature = temperature;
     }
 
     public Float getSaturation() {
         return saturation;
     }
 
-    public void setSaturation(Float saturation) {
-        this.saturation = saturation;
-    }
-
     public Float getImc() {
         return imc;
-    }
-
-    public void setImc(Float imc) {
-        this.imc = imc;
     }
 
     public LocalDate getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(LocalDate lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
     public List<HealthRecordHistory> getHistory() {
         return history;
-    }
-
-    public void setHistory(List<HealthRecordHistory> history) {
-        this.history = history;
     }
 }

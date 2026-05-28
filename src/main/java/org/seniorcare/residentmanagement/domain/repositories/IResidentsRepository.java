@@ -2,8 +2,8 @@ package org.seniorcare.residentmanagement.domain.repositories;
 
 import org.seniorcare.residentmanagement.domain.aggregates.Resident;
 import org.seniorcare.residentmanagement.domain.vo.Cpf;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.seniorcare.shared.domain.PageResult;
+import org.seniorcare.shared.domain.Pagination;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +19,7 @@ public interface IResidentsRepository {
 
     boolean existsByCpf(Cpf cpf);
 
-    Page<Resident> findAll(Pageable pageable);
+    PageResult<Resident> findAll(Pagination pagination);
 
     List<Resident> findByFamilyMemberId(UUID userId);
 }

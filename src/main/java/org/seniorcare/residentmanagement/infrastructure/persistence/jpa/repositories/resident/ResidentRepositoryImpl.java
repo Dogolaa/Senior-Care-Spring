@@ -5,9 +5,11 @@ import org.seniorcare.residentmanagement.domain.repositories.IResidentsRepositor
 import org.seniorcare.residentmanagement.domain.vo.Cpf;
 import org.seniorcare.residentmanagement.infrastructure.persistence.jpa.mappers.ResidentMapper;
 import org.seniorcare.residentmanagement.infrastructure.persistence.jpa.models.ResidentModel;
+import org.seniorcare.shared.domain.PageResult;
+import org.seniorcare.shared.domain.Pagination;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,37 +31,38 @@ public class ResidentRepositoryImpl implements IResidentsRepository {
     @Override
     public void save(Resident resident) {
         ResidentModel residentModel = residentMapper.toModel(resident);
-
         if (residentModel.getFamilyLinks() != null) {
             residentModel.getFamilyLinks().forEach(link -> link.setResident(residentModel));
         }
-
         jpaRepository.save(residentModel);
     }
 
     @Override
     public Optional<Resident> findById(UUID id) {
-        return this.jpaRepository.findByIdWithDetails(id).map(residentMapper::toEntity);
+        return jpaRepository.findByIdWithDetails(id).map(residentMapper::toEntity);
     }
 
     @Override
     public Optional<Resident> findByCpf(Cpf cpf) {
-        return this.jpaRepository.findByCpf(cpf.CPF()).map(residentMapper::toEntity);
+        return jpaRepository.findByCpf(cpf.CPF()).map(residentMapper::toEntity);
     }
 
     @Override
     public boolean existsByCpf(Cpf cpf) {
-        return this.jpaRepository.findByCpf(cpf.CPF()).isPresent();
+        return jpaRepository.findByCpf(cpf.CPF()).isPresent();
     }
 
     @Override
-    public Page<Resident> findAll(Pageable pageable) {
-        return this.jpaRepository.findAll(pageable).map(residentMapper::toEntity);
+    public PageResult<Resident> findAll(Pagination pagination) {
+        Page<Resident> page = jpaRepository
+                .findAll(PageRequest.of(pagination.page(), pagination.size()))
+                .map(residentMapper::toEntity);
+        return new PageResult<>(page.getContent(), page.getTotalElements(), pagination.page(), pagination.size());
     }
 
     @Override
     public List<Resident> findByFamilyMemberId(UUID userId) {
-        return this.jpaRepository.findByFamilyMemberId(userId).stream()
+        return jpaRepository.findByFamilyMemberId(userId).stream()
                 .map(residentMapper::toEntity)
                 .toList();
     }

@@ -1,8 +1,8 @@
 package org.seniorcare.identityaccess.domain.repositories;
 
 import org.seniorcare.identityaccess.domain.entities.Manager;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.seniorcare.shared.domain.PageResult;
+import org.seniorcare.shared.domain.Pagination;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -11,6 +11,5 @@ public interface IManagerRepository {
 
     Optional<Manager> findById(UUID id);
 
-    Page<Manager> findAll(Pageable pageable);
-
+    PageResult<Manager> findAll(Pagination pagination);
 }

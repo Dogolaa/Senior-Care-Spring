@@ -5,7 +5,11 @@ import org.seniorcare.identityaccess.application.queries.impl.nurse.FindAllNurse
 import org.seniorcare.identityaccess.domain.entities.Nurse;
 import org.seniorcare.identityaccess.domain.entities.User;
 import org.seniorcare.identityaccess.domain.repositories.INurseRepository;
+import org.seniorcare.shared.domain.PageResult;
+import org.seniorcare.shared.domain.Pagination;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +24,20 @@ public class FindAllNursesQueryHandler {
 
     @Transactional(readOnly = true)
     public Page<NurseDTO> handle(FindAllNursesQuery query) {
-        Page<Nurse> nursePage = nurseRepository.findAll(query.pageable());
-        return nursePage.map(this::toDTO);
+        Pagination pagination = new Pagination(
+                query.pageable().getPageNumber(),
+                query.pageable().getPageSize()
+        );
+        PageResult<NurseDTO> result = nurseRepository.findAll(pagination).map(this::toDTO);
+        return new PageImpl<>(
+                result.content(),
+                PageRequest.of(result.currentPage(), result.pageSize()),
+                result.totalElements()
+        );
     }
-    
+
     private NurseDTO toDTO(Nurse nurse) {
         User user = nurse.getUser();
-
         return new NurseDTO(
                 user.getId(),
                 nurse.getId(),

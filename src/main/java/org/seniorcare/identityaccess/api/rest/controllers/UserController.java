@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.seniorcare.health.api.rest.dto.AddPhotoRequest;
+import org.seniorcare.identityaccess.api.rest.dto.user.AddPhotoRequest;
 import org.seniorcare.identityaccess.api.rest.dto.user.UpdateUserRequest;
 import org.seniorcare.identityaccess.application.commands.handlers.user.DeleteUserCommandHandler;
 import org.seniorcare.identityaccess.application.commands.handlers.user.UpdateUserCommandHandler;

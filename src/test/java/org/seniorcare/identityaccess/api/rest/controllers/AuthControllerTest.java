@@ -3,6 +3,7 @@ package org.seniorcare.identityaccess.api.rest.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.seniorcare.config.SecurityConfig;
+import org.seniorcare.identityaccess.application.commands.handlers.user.ChangePasswordCommandHandler;
 import org.seniorcare.identityaccess.application.commands.handlers.user.CreateUserCommandHandler;
 import org.seniorcare.identityaccess.application.services.AuthenticationService;
 import org.seniorcare.identityaccess.api.rest.dto.auth.LoginResponse;
@@ -35,6 +36,9 @@ class AuthControllerTest {
 
     @MockBean
     private CreateUserCommandHandler createHandler;
+
+    @MockBean
+    private ChangePasswordCommandHandler changePasswordHandler;
 
     @MockBean
     private AuthenticationService authenticationService;
@@ -111,7 +115,7 @@ class AuthControllerTest {
     @Test
     void login_withValidCredentials_shouldReturn200WithToken() throws Exception {
         LoginResponse loginResponse = new LoginResponse(
-                "jwt.token.here", UUID.randomUUID(), "Maria", "maria@example.com", "DEFAULT_USER");
+                "jwt.token.here", UUID.randomUUID(), "Maria", "maria@example.com", "DEFAULT_USER", true);
         when(authenticationService.login(any())).thenReturn(loginResponse);
 
         String requestBody = """

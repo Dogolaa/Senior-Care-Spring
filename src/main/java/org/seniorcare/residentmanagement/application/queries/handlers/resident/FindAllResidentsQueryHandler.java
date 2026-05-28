@@ -6,7 +6,11 @@ import org.seniorcare.residentmanagement.application.queries.impl.resident.FindA
 import org.seniorcare.residentmanagement.domain.aggregates.Resident;
 import org.seniorcare.residentmanagement.domain.entities.FamilyLink;
 import org.seniorcare.residentmanagement.domain.repositories.IResidentsRepository;
+import org.seniorcare.shared.domain.PageResult;
+import org.seniorcare.shared.domain.Pagination;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +28,16 @@ public class FindAllResidentsQueryHandler {
 
     @Transactional(readOnly = true)
     public Page<ResidentDTO> handle(FindAllResidentsQuery query) {
-        Page<Resident> page = residentsRepository.findAll(query.pageable());
-        return page.map(this::toDTO);
+        Pagination pagination = new Pagination(
+                query.pageable().getPageNumber(),
+                query.pageable().getPageSize()
+        );
+        PageResult<ResidentDTO> result = residentsRepository.findAll(pagination).map(this::toDTO);
+        return new PageImpl<>(
+                result.content(),
+                PageRequest.of(result.currentPage(), result.pageSize()),
+                result.totalElements()
+        );
     }
 
     private ResidentDTO toDTO(Resident resident) {

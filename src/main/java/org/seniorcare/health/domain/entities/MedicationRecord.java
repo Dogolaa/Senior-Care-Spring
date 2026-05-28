@@ -1,5 +1,7 @@
 package org.seniorcare.health.domain.entities;
 
+import org.seniorcare.shared.domain.Default;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,79 +9,62 @@ import java.util.UUID;
 
 public class MedicationRecord {
 
-    private UUID id;
-    private UUID residentId;
-    private UUID medicationId;
-    private LocalDateTime administrationDate;
-    private UUID administeredById;
-    private String dose;
-    private List<String> photoUrls = new ArrayList<>();
+    private final UUID id;
+    private final UUID residentId;
+    private final UUID medicationId;
+    private final LocalDateTime administrationDate;
+    private final UUID administeredById;
+    private final String dose;
+    private final List<String> photoUrls;
 
-    public MedicationRecord() {
-    }
-
-    public MedicationRecord(UUID residentId, UUID medicationId, LocalDateTime administrationDate, UUID administeredById, String dose) {
+    public MedicationRecord(UUID residentId, UUID medicationId, LocalDateTime administrationDate,
+            UUID administeredById, String dose) {
         this.id = UUID.randomUUID();
         this.residentId = residentId;
         this.medicationId = medicationId;
         this.administrationDate = administrationDate;
         this.administeredById = administeredById;
         this.dose = dose;
+        this.photoUrls = new ArrayList<>();
+    }
+
+    @Default
+    public MedicationRecord(UUID id, UUID residentId, UUID medicationId, LocalDateTime administrationDate,
+            UUID administeredById, String dose, List<String> photoUrls) {
+        this.id = id;
+        this.residentId = residentId;
+        this.medicationId = medicationId;
+        this.administrationDate = administrationDate;
+        this.administeredById = administeredById;
+        this.dose = dose;
+        this.photoUrls = photoUrls != null ? photoUrls : new ArrayList<>();
     }
 
     public UUID getId() {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
     public UUID getResidentId() {
         return residentId;
-    }
-
-    public void setResidentId(UUID residentId) {
-        this.residentId = residentId;
     }
 
     public UUID getMedicationId() {
         return medicationId;
     }
 
-    public void setMedicationId(UUID medicationId) {
-        this.medicationId = medicationId;
-    }
-
     public LocalDateTime getAdministrationDate() {
         return administrationDate;
-    }
-
-    public void setAdministrationDate(LocalDateTime administrationDate) {
-        this.administrationDate = administrationDate;
     }
 
     public UUID getAdministeredById() {
         return administeredById;
     }
 
-    public void setAdministeredById(UUID administeredById) {
-        this.administeredById = administeredById;
-    }
-
     public String getDose() {
         return dose;
     }
 
-    public void setDose(String dose) {
-        this.dose = dose;
-    }
-
     public List<String> getPhotoUrls() {
         return photoUrls;
-    }
-
-    public void setPhotoUrls(List<String> photoUrls) {
-        this.photoUrls = photoUrls;
     }
 }

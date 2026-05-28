@@ -1,6 +1,7 @@
 package org.seniorcare.health.application.commands.handlers;
 
 import org.seniorcare.health.application.commands.impl.AddPhotoToHealthRecordHistoryCommand;
+import org.seniorcare.health.domain.entities.HealthRecordPhoto;
 import org.seniorcare.health.domain.repositories.IHealthRecordRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ public class AddPhotoToHealthRecordHistoryCommandHandler {
 
     @Transactional
     public void handle(AddPhotoToHealthRecordHistoryCommand command) {
-        healthRecordRepository.addPhotoToHistory(command.healthRecordHistoryId(), command.photoUrl());
+        HealthRecordPhoto photo = new HealthRecordPhoto(command.photoUrl());
+        healthRecordRepository.addPhotoToHistory(command.healthRecordHistoryId(), photo);
     }
 }

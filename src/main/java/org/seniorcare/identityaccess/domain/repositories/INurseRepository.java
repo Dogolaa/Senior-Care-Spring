@@ -1,16 +1,17 @@
 package org.seniorcare.identityaccess.domain.repositories;
 
 import org.seniorcare.identityaccess.domain.entities.Nurse;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.seniorcare.shared.domain.PageResult;
+import org.seniorcare.shared.domain.Pagination;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public interface INurseRepository {
+
     Optional<Nurse> findByCoren(String coren);
 
     Optional<Nurse> findById(UUID id);
 
-    Page<Nurse> findAll(Pageable pageable);
+    PageResult<Nurse> findAll(Pagination pagination);
 }

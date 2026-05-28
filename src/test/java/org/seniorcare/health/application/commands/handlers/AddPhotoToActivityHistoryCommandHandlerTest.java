@@ -6,10 +6,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.seniorcare.health.application.commands.impl.AddPhotoToActivityHistoryCommand;
+import org.seniorcare.health.domain.entities.ActivityRecordPhoto;
 import org.seniorcare.health.domain.repositories.IActivityRecordRepository;
 
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,6 +33,6 @@ class AddPhotoToActivityHistoryCommandHandlerTest {
 
         handler.handle(command);
 
-        verify(activityRecordRepository).addPhotoToHistory(historyId, photoUrl);
+        verify(activityRecordRepository).addPhotoToHistory(eq(historyId), any(ActivityRecordPhoto.class));
     }
 }

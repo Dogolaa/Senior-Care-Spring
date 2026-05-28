@@ -1,6 +1,7 @@
 package org.seniorcare.health.infrastructure.persistence.jpa.repositories;
 
 import org.seniorcare.health.domain.aggregates.ActivityRecord;
+import org.seniorcare.health.domain.entities.ActivityRecordPhoto;
 import org.seniorcare.health.domain.repositories.IActivityRecordRepository;
 import org.seniorcare.health.infrastructure.persistence.jpa.mappers.ActivityRecordMapper;
 import org.seniorcare.health.infrastructure.persistence.jpa.models.ActivityRecordHistoryModel;
@@ -9,7 +10,6 @@ import org.seniorcare.health.infrastructure.persistence.jpa.models.ActivityRecor
 import org.seniorcare.shared.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Repository;
 
-import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,16 +51,16 @@ public class ActivityRecordRepositoryImpl implements IActivityRecordRepository {
     }
 
     @Override
-    public void addPhotoToHistory(UUID activityRecordHistoryId, String photoUrl) {
+    public void addPhotoToHistory(UUID activityRecordHistoryId, ActivityRecordPhoto photo) {
         ActivityRecordHistoryModel history = historyJpaRepository.findById(activityRecordHistoryId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Activity record history not found: " + activityRecordHistoryId));
 
-        ActivityRecordPhotoModel photo = new ActivityRecordPhotoModel();
-        photo.setId(UUID.randomUUID());
-        photo.setActivityRecordHistory(history);
-        photo.setPhotoUrl(photoUrl);
-        photo.setUploadedAt(Instant.now());
-        photoJpaRepository.save(photo);
+        ActivityRecordPhotoModel photoModel = new ActivityRecordPhotoModel();
+        photoModel.setId(photo.getId());
+        photoModel.setActivityRecordHistory(history);
+        photoModel.setPhotoUrl(photo.getPhotoUrl());
+        photoModel.setUploadedAt(photo.getUploadedAt());
+        photoJpaRepository.save(photoModel);
     }
 }
