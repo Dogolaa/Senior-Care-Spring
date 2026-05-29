@@ -5,6 +5,7 @@ import org.seniorcare.health.domain.aggregates.HealthRecord;
 import org.seniorcare.health.domain.repositories.IHealthRecordRepository;
 import org.seniorcare.shared.exceptions.BadRequestException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -17,6 +18,7 @@ public class CreateHealthRecordCommandHandler {
         this.healthRecordRepository = healthRecordRepository;
     }
 
+    @Transactional
     public UUID handle(CreateHealthRecordCommand command) {
         healthRecordRepository.findByResidentId(command.residentId()).ifPresent(r -> {
             throw new BadRequestException("Health record for resident " + command.residentId() + " already exists.");

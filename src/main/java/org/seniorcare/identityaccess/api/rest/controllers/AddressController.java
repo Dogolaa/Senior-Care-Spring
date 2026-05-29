@@ -15,6 +15,7 @@ import org.seniorcare.identityaccess.application.commands.impl.address.UpdateAdd
 import org.seniorcare.identityaccess.application.dto.address.AddressDTO;
 import org.seniorcare.identityaccess.application.queries.handlers.address.FindAddressByIdQueryHandler;
 import org.seniorcare.identityaccess.application.queries.impl.address.FindAddressByIdQuery;
+import jakarta.validation.Valid;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,7 +51,7 @@ public class AddressController {
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Endereço criado com sucesso"), @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos")})
     @PostMapping
     @PreAuthorize("hasAuthority('CREATE_USER')")
-    public ResponseEntity<Map<String, UUID>> createAddress(@RequestBody CreateAddressRequest request) {
+    public ResponseEntity<Map<String, UUID>> createAddress(@Valid @RequestBody CreateAddressRequest request) {
         var command = new CreateAddressCommand(request.cep(), request.country(), request.state(), request.city(), request.district()
                 , request.street(), request.number(), request.complement());
 
@@ -85,7 +86,7 @@ public class AddressController {
             @ApiResponse(responseCode = "404", description = "Endereço não encontrado")})
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('UPDATE_USER')")
-    public ResponseEntity<EntityModel<AddressDTO>> updateAddress(@PathVariable UUID id, @RequestBody UpdateAddressRequest request) {
+    public ResponseEntity<EntityModel<AddressDTO>> updateAddress(@PathVariable UUID id, @Valid @RequestBody UpdateAddressRequest request) {
         var command = new UpdateAddressCommand(
                 id,
                 request.cep(),

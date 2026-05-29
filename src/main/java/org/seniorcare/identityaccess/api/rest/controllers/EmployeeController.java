@@ -114,7 +114,7 @@ public class EmployeeController {
     @Operation(summary = "Promove usuário(a) para enfermeiro(a)")
     @PostMapping("/nurses")
     @PreAuthorize("hasAuthority('MANAGE_EMPLOYEES')")
-    public ResponseEntity<Void> promoteUserToNurse(@RequestBody PromoteUserToNurseRequest request) {
+    public ResponseEntity<Void> promoteUserToNurse(@Valid @RequestBody PromoteUserToNurseRequest request) {
         var command = new PromoteUserToNurseCommand(
                 request.userId(),
                 request.admissionDate(),
@@ -129,7 +129,7 @@ public class EmployeeController {
     @Operation(summary = "Promove usuário(a) para gerente")
     @PostMapping("/managers")
     @PreAuthorize("hasAuthority('MANAGE_EMPLOYEES')")
-    public ResponseEntity<Void> promoteUserToManager(@RequestBody PromoteUserToManagerRequest request) {
+    public ResponseEntity<Void> promoteUserToManager(@Valid @RequestBody PromoteUserToManagerRequest request) {
         var command = new PromoteUserToManagerCommand(
                 request.userId(),
                 request.admissionDate(),
@@ -143,7 +143,7 @@ public class EmployeeController {
     @Operation(summary = "Promove usuário(a) para médico(a)")
     @PostMapping("/doctors")
     @PreAuthorize("hasAuthority('MANAGE_EMPLOYEES')")
-    public ResponseEntity<Void> promoteUserToDoctor(@RequestBody PromoteUserToDoctorRequest request) {
+    public ResponseEntity<Void> promoteUserToDoctor(@Valid @RequestBody PromoteUserToDoctorRequest request) {
         var command = new PromoteUserToDoctorCommand(
                 request.userId(),
                 request.admissionDate(),

@@ -24,6 +24,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -86,7 +87,7 @@ public class UserController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso"), @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos"), @ApiResponse(responseCode = "404", description = "Usuário não encontrado")})
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('UPDATE_USER')")
-    public ResponseEntity<EntityModel<UserDTO>> updateUser(@PathVariable UUID id, @RequestBody UpdateUserRequest request) {
+    public ResponseEntity<EntityModel<UserDTO>> updateUser(@PathVariable UUID id, @Valid @RequestBody UpdateUserRequest request) {
         var command = new UpdateUserCommand(
                 id,
                 request.name(),
@@ -117,8 +118,8 @@ public class UserController {
     @Operation(summary = "Atualiza a foto de perfil de um usuário")
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Foto atualizada com sucesso"), @ApiResponse(responseCode = "404", description = "Usuário não encontrado")})
     @PatchMapping("/{id}/photo")
-    @PreAuthorize("hasAuthority('READ_USER')")
-    public ResponseEntity<Void> updatePhoto(@PathVariable UUID id, @RequestBody AddPhotoRequest request) {
+    @PreAuthorize("hasAuthority('UPDATE_USER')")
+    public ResponseEntity<Void> updatePhoto(@PathVariable UUID id, @Valid @RequestBody AddPhotoRequest request) {
         updatePhotoHandler.handle(new UpdateUserPhotoCommand(id, request.getPhotoUrl()));
         return ResponseEntity.noContent().build();
     }
