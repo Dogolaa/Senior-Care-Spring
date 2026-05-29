@@ -16,6 +16,7 @@ public record HealthRecordResponse(
         Float saturation,
         Float imc,
         LocalDate lastUpdated,
-        List<HealthRecordHistoryResponse> history
+        List<HealthRecordHistoryResponse> history,
+        List<String> conditions
 ) {
 }

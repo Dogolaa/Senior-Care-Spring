@@ -23,6 +23,7 @@ public class HealthRecord {
     private Float imc;
     private LocalDate lastUpdated;
     private List<HealthRecordHistory> history;
+    private List<String> conditions;
 
     public HealthRecord(UUID residentId, UUID updatedById, Float height, Float weight, String bloodPressure,
             Integer heartRate, Float temperature, Float saturation) {
@@ -38,13 +39,14 @@ public class HealthRecord {
         this.imc = calculateImc(weight, height);
         this.lastUpdated = LocalDate.now();
         this.history = new ArrayList<>();
+        this.conditions = new ArrayList<>();
         addHistoryEntry(VitalSignsSource.MANUAL);
     }
 
     @Default
     public HealthRecord(UUID id, UUID residentId, UUID updatedById, Float height, Float weight,
             String bloodPressure, Integer heartRate, Float temperature, Float saturation,
-            Float imc, LocalDate lastUpdated, List<HealthRecordHistory> history) {
+            Float imc, LocalDate lastUpdated, List<HealthRecordHistory> history, List<String> conditions) {
         this.id = id;
         this.residentId = residentId;
         this.updatedById = updatedById;
@@ -57,6 +59,7 @@ public class HealthRecord {
         this.imc = imc;
         this.lastUpdated = lastUpdated;
         this.history = history != null ? history : new ArrayList<>();
+        this.conditions = conditions != null ? conditions : new ArrayList<>();
     }
 
     public void update(UUID updatedById, Float height, Float weight, String bloodPressure, Integer heartRate,
@@ -107,6 +110,20 @@ public class HealthRecord {
         this.history.add(entry);
     }
 
+    public void addCondition(String conditionDescription) {
+        if (conditionDescription == null || conditionDescription.isBlank()) return;
+        String normalized = conditionDescription.trim().toUpperCase();
+        if (!this.conditions.contains(normalized)) {
+            this.conditions.add(normalized);
+        }
+    }
+
+    public void removeCondition(String conditionDescription) {
+        if (conditionDescription == null || conditionDescription.isBlank()) return;
+        String normalized = conditionDescription.trim().toUpperCase();
+        this.conditions.remove(normalized);
+    }
+
     public UUID getId() {
         return id;
     }
@@ -153,5 +170,9 @@ public class HealthRecord {
 
     public List<HealthRecordHistory> getHistory() {
         return history;
+    }
+
+    public List<String> getConditions() {
+        return conditions;
     }
 }

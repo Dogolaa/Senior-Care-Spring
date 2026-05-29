@@ -5,17 +5,22 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.seniorcare.health.api.rest.dto.AddConditionRequest;
 import org.seniorcare.health.api.rest.dto.AddPhotoRequest;
 import org.seniorcare.health.api.rest.dto.CreateHealthRecordRequest;
 import org.seniorcare.health.api.rest.dto.UpdateHealthRecordRequest;
 import org.seniorcare.health.api.rest.dto.push_vitals.PushVitalsRequest;
+import org.seniorcare.health.application.commands.handlers.AddConditionCommandHandler;
 import org.seniorcare.health.application.commands.handlers.AddPhotoToHealthRecordHistoryCommandHandler;
 import org.seniorcare.health.application.commands.handlers.CreateHealthRecordCommandHandler;
 import org.seniorcare.health.application.commands.handlers.PushVitalsCommandHandler;
+import org.seniorcare.health.application.commands.handlers.RemoveConditionCommandHandler;
 import org.seniorcare.health.application.commands.handlers.UpdateHealthRecordCommandHandler;
+import org.seniorcare.health.application.commands.impl.AddConditionCommand;
 import org.seniorcare.health.application.commands.impl.AddPhotoToHealthRecordHistoryCommand;
 import org.seniorcare.health.application.commands.impl.CreateHealthRecordCommand;
 import org.seniorcare.health.application.commands.impl.PushVitalsCommand;
+import org.seniorcare.health.application.commands.impl.RemoveConditionCommand;
 import org.seniorcare.health.application.commands.impl.UpdateHealthRecordCommand;
 import org.seniorcare.health.application.queries.dto.HealthRecordResponse;
 import org.seniorcare.health.application.queries.handlers.FindHealthRecordByResidentIdQueryHandler;
@@ -38,18 +43,24 @@ public class HealthRecordController {
     private final FindHealthRecordByResidentIdQueryHandler findHealthRecordHandler;
     private final PushVitalsCommandHandler pushVitalsHandler;
     private final AddPhotoToHealthRecordHistoryCommandHandler addPhotoHandler;
+    private final AddConditionCommandHandler addConditionHandler;
+    private final RemoveConditionCommandHandler removeConditionHandler;
 
     public HealthRecordController(
             CreateHealthRecordCommandHandler createHealthRecordHandler,
             UpdateHealthRecordCommandHandler updateHealthRecordHandler,
             FindHealthRecordByResidentIdQueryHandler findHealthRecordHandler,
             PushVitalsCommandHandler pushVitalsHandler,
-            AddPhotoToHealthRecordHistoryCommandHandler addPhotoHandler) {
+            AddPhotoToHealthRecordHistoryCommandHandler addPhotoHandler,
+            AddConditionCommandHandler addConditionHandler,
+            RemoveConditionCommandHandler removeConditionHandler) {
         this.createHealthRecordHandler = createHealthRecordHandler;
         this.updateHealthRecordHandler = updateHealthRecordHandler;
         this.findHealthRecordHandler = findHealthRecordHandler;
         this.pushVitalsHandler = pushVitalsHandler;
         this.addPhotoHandler = addPhotoHandler;
+        this.addConditionHandler = addConditionHandler;
+        this.removeConditionHandler = removeConditionHandler;
     }
 
     @Operation(summary = "Cria um novo prontuário médico para um residente")
@@ -156,5 +167,38 @@ public class HealthRecordController {
         var command = new AddPhotoToHealthRecordHistoryCommand(historyId, request.getPhotoUrl());
         addPhotoHandler.handle(command);
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Adiciona uma condição/doença ao prontuário do residente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Condição adicionada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "404", description = "Prontuário não encontrado para o residente"),
+            @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
+    })
+    @PostMapping("/resident/{residentId}/conditions")
+    @PreAuthorize("hasAuthority('MANAGE_HEALTH_RECORDS')")
+    public ResponseEntity<Void> addCondition(
+            @PathVariable UUID residentId,
+            @Valid @RequestBody AddConditionRequest request) {
+        var command = new AddConditionCommand(residentId, request.conditionDescription());
+        addConditionHandler.handle(command);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Remove uma condição/doença do prontuário do residente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Condição removida com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Prontuário não encontrado para o residente"),
+            @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
+    })
+    @DeleteMapping("/resident/{residentId}/conditions")
+    @PreAuthorize("hasAuthority('MANAGE_HEALTH_RECORDS')")
+    public ResponseEntity<Void> removeCondition(
+            @PathVariable UUID residentId,
+            @RequestParam String description) {
+        var command = new RemoveConditionCommand(residentId, description);
+        removeConditionHandler.handle(command);
+        return ResponseEntity.noContent().build();
     }
 }

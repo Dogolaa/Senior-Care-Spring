@@ -3,9 +3,11 @@ package org.seniorcare.health.api.rest.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.seniorcare.config.SecurityConfig;
+import org.seniorcare.health.application.commands.handlers.AddConditionCommandHandler;
 import org.seniorcare.health.application.commands.handlers.AddPhotoToHealthRecordHistoryCommandHandler;
 import org.seniorcare.health.application.commands.handlers.CreateHealthRecordCommandHandler;
 import org.seniorcare.health.application.commands.handlers.PushVitalsCommandHandler;
+import org.seniorcare.health.application.commands.handlers.RemoveConditionCommandHandler;
 import org.seniorcare.health.application.commands.handlers.UpdateHealthRecordCommandHandler;
 import org.seniorcare.health.application.queries.dto.HealthRecordHistoryResponse;
 import org.seniorcare.health.application.queries.dto.HealthRecordResponse;
@@ -56,6 +58,12 @@ class HealthRecordControllerTest {
 
     @MockBean
     private AddPhotoToHealthRecordHistoryCommandHandler addPhotoHandler;
+
+    @MockBean
+    private AddConditionCommandHandler addConditionHandler;
+
+    @MockBean
+    private RemoveConditionCommandHandler removeConditionHandler;
 
     @MockBean
     private org.seniorcare.identityaccess.infrastructure.security.JwtService jwtService;
@@ -140,7 +148,7 @@ class HealthRecordControllerTest {
         HealthRecordResponse response = new HealthRecordResponse(
                 recordId, residentId, UUID.randomUUID(), 1.75f, 70f,
                 "120/80", 72, 36.5f, 98f, 70f / (1.75f * 1.75f),
-                LocalDate.now(), List.of(history));
+                LocalDate.now(), List.of(history), List.of());
 
         when(findHandler.handle(any())).thenReturn(response);
 
@@ -157,7 +165,7 @@ class HealthRecordControllerTest {
 
         HealthRecordResponse response = new HealthRecordResponse(
                 UUID.randomUUID(), residentId, UUID.randomUUID(), 1.75f, 70f,
-                "120/80", 72, 36.5f, 98f, null, LocalDate.now(), List.of());
+                "120/80", 72, 36.5f, 98f, null, LocalDate.now(), List.of(), List.of());
 
         when(findHandler.handle(any())).thenReturn(response);
 

@@ -52,6 +52,7 @@ public class FindHealthRecordByResidentIdQueryHandler {
                 record.getSaturation(),
                 record.getImc(),
                 record.getLastUpdated(),
-                history);
+                history,
+                record.getConditions());
     }
 }

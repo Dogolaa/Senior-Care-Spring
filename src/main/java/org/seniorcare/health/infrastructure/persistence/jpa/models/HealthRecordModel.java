@@ -6,9 +6,13 @@ import java.util.List;
 import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -31,6 +35,14 @@ public class HealthRecordModel {
 
     @OneToMany(mappedBy = "healthRecord", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<HealthRecordHistoryModel> history = new ArrayList<>();
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "health_record_conditions",
+            joinColumns = @JoinColumn(name = "health_record_id")
+    )
+    @Column(name = "condition_description")
+    private List<String> conditions = new ArrayList<>();
 
     public HealthRecordModel() {
     }
@@ -129,5 +141,13 @@ public class HealthRecordModel {
 
     public void setHistory(List<HealthRecordHistoryModel> history) {
         this.history = history;
+    }
+
+    public List<String> getConditions() {
+        return conditions;
+    }
+
+    public void setConditions(List<String> conditions) {
+        this.conditions = conditions;
     }
 }
