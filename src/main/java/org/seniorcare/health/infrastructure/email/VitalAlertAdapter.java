@@ -80,13 +80,20 @@ public class VitalAlertAdapter implements IVitalAlertPort {
 
     private String buildBody(String recipientName, String residentName, List<AbnormalVital> abnormals) {
         String rows = abnormals.stream()
-                .map(v -> """
-                        <tr>
-                            <td style="padding:8px 12px;font-weight:bold;">%s</td>
-                            <td style="padding:8px 12px;font-size:16px;color:#dc2626;font-weight:bold;">%s</td>
-                            <td style="padding:8px 12px;color:#6b7280;">%s</td>
-                        </tr>
-                        """.formatted(v.name(), v.value(), v.reason()))
+                .map(v -> {
+                    boolean isCritical = "CRITICAL".equals(v.severity());
+                    String valueColor = isCritical ? "#dc2626" : "#d97706";
+                    String badge = isCritical
+                            ? "<span style=\"background:#fee2e2;color:#dc2626;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:bold;\">CRÍTICO</span>"
+                            : "<span style=\"background:#fef3c7;color:#d97706;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:bold;\">ATENÇÃO</span>";
+                    return """
+                            <tr>
+                                <td style="padding:8px 12px;font-weight:bold;">%s %s</td>
+                                <td style="padding:8px 12px;font-size:16px;color:%s;font-weight:bold;">%s</td>
+                                <td style="padding:8px 12px;color:#6b7280;">%s</td>
+                            </tr>
+                            """.formatted(v.name(), badge, valueColor, v.value(), v.reason());
+                })
                 .collect(Collectors.joining());
 
         return """

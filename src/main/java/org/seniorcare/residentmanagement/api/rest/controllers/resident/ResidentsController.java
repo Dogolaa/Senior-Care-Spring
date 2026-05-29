@@ -289,13 +289,13 @@ public class ResidentsController {
             @ApiResponse(responseCode = "404", description = "Residente não encontrado"),
             @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
     })
-    @DeleteMapping("/{residentId}/allergies/{allergyDescription}")
+    @DeleteMapping("/{residentId}/allergies")
     @PreAuthorize("hasAuthority('MANAGE_RESIDENTS')")
     public ResponseEntity<Void> removeAllergy(
             @PathVariable UUID residentId,
-            @PathVariable String allergyDescription) {
+            @RequestParam String description) {
 
-        var command = new RemoveAllergyCommand(residentId, allergyDescription);
+        var command = new RemoveAllergyCommand(residentId, description);
         removeAllergyHandler.handle(command);
         return ResponseEntity.noContent().build();
     }

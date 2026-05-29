@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.seniorcare.health.application.commands.impl.PushVitalsCommand;
+import org.seniorcare.health.application.ports.output.IVitalAlertPort;
 import org.seniorcare.health.domain.aggregates.HealthRecord;
 import org.seniorcare.health.domain.repositories.IHealthRecordRepository;
 import org.seniorcare.health.domain.vo.VitalSignsSource;
@@ -24,6 +25,9 @@ class PushVitalsCommandHandlerTest {
 
     @Mock
     private IHealthRecordRepository healthRecordRepository;
+
+    @Mock
+    private IVitalAlertPort vitalAlertPort;
 
     @InjectMocks
     private PushVitalsCommandHandler handler;
