@@ -98,11 +98,12 @@ public class AddressController {
                 request.complement()
 
         );
-        AddressDTO updatedAddressDTO = updateHandler.handle(command);
+        UUID updatedId = updateHandler.handle(command);
 
-        EntityModel<AddressDTO> entityModel = addLinksToAddress(updatedAddressDTO);
-
-        return ResponseEntity.ok(entityModel);
+        return findByIdHandler.handle(new FindAddressByIdQuery(updatedId))
+                .map(this::addLinksToAddress)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Deleta um endereço (Soft Delete)")

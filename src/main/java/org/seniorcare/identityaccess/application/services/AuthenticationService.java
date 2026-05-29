@@ -1,9 +1,9 @@
 package org.seniorcare.identityaccess.application.services;
 
-import org.seniorcare.identityaccess.api.rest.dto.auth.LoginRequest;
-import org.seniorcare.identityaccess.api.rest.dto.auth.LoginResponse;
+import org.seniorcare.identityaccess.application.commands.impl.auth.LoginCommand;
+import org.seniorcare.identityaccess.application.dto.auth.LoginResult;
+import org.seniorcare.identityaccess.application.ports.output.IJwtService;
 import org.seniorcare.identityaccess.application.security.AuthenticatedPrincipal;
-import org.seniorcare.identityaccess.infrastructure.security.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,18 +14,18 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
+    private final IJwtService jwtService;
 
     public AuthenticationService(
             AuthenticationManager authenticationManager,
-            JwtService jwtService) {
+            IJwtService jwtService) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
     }
 
-    public LoginResponse login(LoginRequest request) {
+    public LoginResult login(LoginCommand command) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email(), request.password())
+                new UsernamePasswordAuthenticationToken(command.email(), command.password())
         );
 
         var userDetails = (UserDetails) authentication.getPrincipal();
@@ -33,7 +33,7 @@ public class AuthenticationService {
 
         String token = jwtService.generateToken(userDetails);
 
-        return new LoginResponse(
+        return new LoginResult(
                 token,
                 principal.getId(),
                 principal.getName(),

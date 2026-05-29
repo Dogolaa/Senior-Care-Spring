@@ -1,7 +1,5 @@
 package org.seniorcare.health.domain.vo;
 
-import org.seniorcare.health.application.ports.output.IVitalAlertPort.AbnormalVital;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -4,6 +4,7 @@ import org.seniorcare.health.application.commands.impl.PushVitalsCommand;
 import org.seniorcare.health.application.ports.output.IVitalAlertPort;
 import org.seniorcare.health.domain.aggregates.HealthRecord;
 import org.seniorcare.health.domain.repositories.IHealthRecordRepository;
+import org.seniorcare.health.domain.vo.AbnormalVital;
 import org.seniorcare.health.domain.vo.VitalThresholds;
 import org.seniorcare.shared.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public class PushVitalsCommandHandler {
 
         healthRecordRepository.save(record);
 
-        List<IVitalAlertPort.AbnormalVital> abnormals = VitalThresholds.evaluate(
+        List<AbnormalVital> abnormals = VitalThresholds.evaluate(
                 command.heartRate(),
                 command.saturation(),
                 command.bloodPressure(),

@@ -1,12 +1,13 @@
 package org.seniorcare.identityaccess.application.commands.handlers.address;
 
 import org.seniorcare.identityaccess.application.commands.impl.address.UpdateAddressCommand;
-import org.seniorcare.identityaccess.application.dto.address.AddressDTO;
 import org.seniorcare.identityaccess.domain.entities.Address;
 import org.seniorcare.identityaccess.domain.repositories.IAddressRepository;
 import org.seniorcare.shared.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 public class UpdateAddressCommandHandler {
@@ -18,7 +19,7 @@ public class UpdateAddressCommandHandler {
     }
 
     @Transactional
-    public AddressDTO handle(UpdateAddressCommand command) {
+    public UUID handle(UpdateAddressCommand command) {
 
         Address addressToUpdate = addressRepository.findById(command.id())
                 .orElseThrow(() -> new ResourceNotFoundException("Address with id " + command.id() + " not found."));
@@ -36,20 +37,6 @@ public class UpdateAddressCommandHandler {
 
         addressRepository.save(addressToUpdate);
 
-        return toDTO(addressToUpdate);
-    }
-
-    private AddressDTO toDTO(Address address) {
-        return new AddressDTO(
-                address.getId(),
-                address.getCep(),
-                address.getCountry(),
-                address.getState(),
-                address.getCity(),
-                address.getDistrict(),
-                address.getStreet(),
-                address.getNumber(),
-                address.getComplement()
-        );
+        return addressToUpdate.getId();
     }
 }

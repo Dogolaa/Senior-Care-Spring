@@ -1,7 +1,6 @@
 package org.seniorcare.identityaccess.application.commands.handlers.user;
 
 import org.seniorcare.identityaccess.application.commands.impl.user.UpdateUserCommand;
-import org.seniorcare.identityaccess.application.dto.user.UserDTO;
 import org.seniorcare.identityaccess.domain.entities.User;
 import org.seniorcare.identityaccess.domain.repositories.IUserRepository;
 import org.seniorcare.shared.exceptions.ResourceNotFoundException;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UpdateUserCommandHandler {
@@ -20,7 +20,7 @@ public class UpdateUserCommandHandler {
     }
 
     @Transactional
-    public UserDTO handle(UpdateUserCommand command) {
+    public UUID handle(UpdateUserCommand command) {
 
         User userToUpdate = userRepository.findById(command.id())
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + command.id() + " not found."));
@@ -41,23 +41,6 @@ public class UpdateUserCommandHandler {
 
         userRepository.save(userToUpdate);
 
-        User savedUser = userRepository.findById(userToUpdate.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User with id " + userToUpdate.getId() + " not found after update."));
-
-        return toDTO(savedUser);
-    }
-
-    private UserDTO toDTO(User user) {
-        return new UserDTO(
-                user.getId(),
-                user.getName(),
-                user.getEmail().value(),
-                user.getPhone(),
-                user.isActive(),
-                user.getRoleName(),
-                user.getPhotoUrl(),
-                user.getCreatedAt(),
-                user.getUpdatedAt()
-        );
+        return userToUpdate.getId();
     }
 }

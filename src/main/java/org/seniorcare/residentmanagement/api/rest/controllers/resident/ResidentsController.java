@@ -178,9 +178,12 @@ public class ResidentsController {
                 request.room()
         );
 
-        ResidentDTO updatedResident = updateResidentHandler.handle(command);
+        UUID updatedId = updateResidentHandler.handle(command);
 
-        return ResponseEntity.ok(addLinksToResident(updatedResident));
+        return findResidentByIdHandler.handle(new FindResidentByIdQuery(updatedId))
+                .map(this::addLinksToResident)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Realiza a alta (soft delete) de um residente")

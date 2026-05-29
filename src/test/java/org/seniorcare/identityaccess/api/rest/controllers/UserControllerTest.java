@@ -128,7 +128,8 @@ class UserControllerTest {
         UUID userId = UUID.randomUUID();
         UserDTO updatedDTO = buildUserDTO(userId);
 
-        when(updateHandler.handle(any())).thenReturn(updatedDTO);
+        when(updateHandler.handle(any())).thenReturn(userId);
+        when(findByIdHandler.handle(any())).thenReturn(Optional.of(updatedDTO));
 
         String requestBody = """
                 {
@@ -152,7 +153,7 @@ class UserControllerTest {
     void updateUser_whenNotFound_shouldReturn404() throws Exception {
         UUID userId = UUID.randomUUID();
 
-        when(updateHandler.handle(any())).thenThrow(new ResourceNotFoundException("User not found"));
+        doThrow(new ResourceNotFoundException("User not found")).when(updateHandler).handle(any());
 
         String requestBody = """
                 {

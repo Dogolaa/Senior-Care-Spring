@@ -10,7 +10,6 @@ import org.seniorcare.identityaccess.api.rest.dto.employee.UpdateEmployeeRequest
 import org.seniorcare.identityaccess.application.commands.handlers.employee.*;
 import org.seniorcare.identityaccess.application.commands.impl.employee.*;
 import org.seniorcare.identityaccess.application.dto.doctor.DoctorDTO;
-import org.seniorcare.identityaccess.application.dto.employee.EmployeeDTO;
 import org.seniorcare.identityaccess.application.dto.employee.EmployeeDetailsDTO;
 import org.seniorcare.identityaccess.application.dto.manager.ManagerDTO;
 import org.seniorcare.identityaccess.application.dto.nurse.NurseDTO;
@@ -168,7 +167,7 @@ public class EmployeeController {
     @Operation(summary = "Atualiza dados de um(a) funcionário(a)")
     @PutMapping("/{employeeId}")
     @PreAuthorize("hasAuthority('MANAGE_EMPLOYEES')")
-    public ResponseEntity<EmployeeDTO> updateEmployee(
+    public ResponseEntity<EntityModel<EmployeeDetailsDTO>> updateEmployee(
             @PathVariable UUID employeeId,
             @Valid @RequestBody UpdateEmployeeRequest request) {
         var command = new UpdateEmployeeCommand(
@@ -180,8 +179,11 @@ public class EmployeeController {
                 request.coren(),
                 request.department()
         );
-        EmployeeDTO updatedEmployee = updateEmployeeHandler.handle(command);
-        return ResponseEntity.ok(updatedEmployee);
+        UUID updatedId = updateEmployeeHandler.handle(command);
+        return findEmployeeByIdHandler.handle(new FindEmployeeByIdQuery(updatedId))
+                .map(this::addLinksToEmployee)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Busca um(a) funcionário(a) genérico por ID")

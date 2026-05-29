@@ -3,6 +3,7 @@ package org.seniorcare.health.infrastructure.email;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.seniorcare.health.application.ports.output.IVitalAlertPort;
+import org.seniorcare.health.domain.vo.AbnormalVital;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

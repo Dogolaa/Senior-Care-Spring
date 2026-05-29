@@ -95,11 +95,12 @@ public class UserController {
                 request.addressId(),
                 request.roleId()
         );
-        UserDTO updatedUserDTO = updateHandler.handle(command);
+        UUID updatedId = updateHandler.handle(command);
 
-        EntityModel<UserDTO> entityModel = addLinksToUser(updatedUserDTO);
-
-        return ResponseEntity.ok(entityModel);
+        return findByIdHandler.handle(new FindUserByIdQuery(updatedId))
+                .map(this::addLinksToUser)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Deleta um usuário (Soft Delete)")

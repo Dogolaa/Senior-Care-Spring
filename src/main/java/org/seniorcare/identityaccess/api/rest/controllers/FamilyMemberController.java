@@ -8,15 +8,8 @@ import jakarta.validation.Valid;
 import org.seniorcare.identityaccess.api.rest.dto.user.CreateFamilyMemberUserRequest;
 import org.seniorcare.identityaccess.application.commands.handlers.user.CreateFamilyMemberUserCommandHandler;
 import org.seniorcare.identityaccess.application.commands.impl.user.CreateFamilyMemberUserCommand;
-import org.seniorcare.identityaccess.application.security.AuthenticatedPrincipal;
-import org.seniorcare.residentmanagement.application.dto.resident.ResidentDTO;
-import org.seniorcare.residentmanagement.application.queries.handlers.resident.FindMyResidentsQueryHandler;
-import org.seniorcare.residentmanagement.application.queries.impl.resident.FindMyResidentsQuery;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -33,13 +25,9 @@ import java.util.UUID;
 public class FamilyMemberController {
 
     private final CreateFamilyMemberUserCommandHandler createHandler;
-    private final FindMyResidentsQueryHandler findMyResidentsHandler;
 
-    public FamilyMemberController(
-            CreateFamilyMemberUserCommandHandler createHandler,
-            FindMyResidentsQueryHandler findMyResidentsHandler) {
+    public FamilyMemberController(CreateFamilyMemberUserCommandHandler createHandler) {
         this.createHandler = createHandler;
-        this.findMyResidentsHandler = findMyResidentsHandler;
     }
 
     @Operation(
@@ -67,25 +55,5 @@ public class FamilyMemberController {
                 .buildAndExpand(newUserId).toUri();
 
         return ResponseEntity.created(location).build();
-    }
-
-    @Operation(
-            summary = "Lista os residentes vinculados ao familiar autenticado",
-            description = "Retorna apenas os residentes aos quais o familiar logado está vinculado via family-link ativo."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
-            @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
-    })
-    @GetMapping("/my-residents")
-    @PreAuthorize("hasAuthority('VIEW_RESIDENT_RECORDS')")
-    public ResponseEntity<List<ResidentDTO>> getMyResidents() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        AuthenticatedPrincipal principal = (AuthenticatedPrincipal) auth.getPrincipal();
-
-        var query = new FindMyResidentsQuery(principal.getId());
-        List<ResidentDTO> residents = findMyResidentsHandler.handle(query);
-
-        return ResponseEntity.ok(residents);
     }
 }

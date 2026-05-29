@@ -10,8 +10,10 @@ import org.seniorcare.identityaccess.api.rest.dto.auth.LoginResponse;
 import org.seniorcare.identityaccess.api.rest.dto.user.CreateUserRequest;
 import org.seniorcare.identityaccess.application.commands.handlers.user.ChangePasswordCommandHandler;
 import org.seniorcare.identityaccess.application.commands.handlers.user.CreateUserCommandHandler;
+import org.seniorcare.identityaccess.application.commands.impl.auth.LoginCommand;
 import org.seniorcare.identityaccess.application.commands.impl.user.ChangePasswordCommand;
 import org.seniorcare.identityaccess.application.commands.impl.user.CreateUserCommand;
+import org.seniorcare.identityaccess.application.dto.auth.LoginResult;
 import org.seniorcare.identityaccess.application.security.AuthenticatedPrincipal;
 import org.seniorcare.identityaccess.application.services.AuthenticationService;
 import jakarta.validation.Valid;
@@ -70,8 +72,15 @@ public class AuthController {
     })
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        LoginResponse response = authenticationService.login(request);
-        return ResponseEntity.ok(response);
+        LoginResult result = authenticationService.login(new LoginCommand(request.email(), request.password()));
+        return ResponseEntity.ok(new LoginResponse(
+                result.token(),
+                result.userId(),
+                result.name(),
+                result.email(),
+                result.role(),
+                result.mustChangePassword()
+        ));
     }
 
     @Operation(summary = "Altera a senha do usuário autenticado")

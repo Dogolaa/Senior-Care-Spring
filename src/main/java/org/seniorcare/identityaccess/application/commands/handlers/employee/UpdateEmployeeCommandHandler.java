@@ -1,8 +1,6 @@
 package org.seniorcare.identityaccess.application.commands.handlers.employee;
 
 import org.seniorcare.identityaccess.application.commands.impl.employee.UpdateEmployeeCommand;
-import org.seniorcare.identityaccess.application.dto.employee.EmployeeDTO;
-import org.seniorcare.identityaccess.application.mappers.EmployeeDTOMapper;
 import org.seniorcare.identityaccess.domain.entities.Doctor;
 import org.seniorcare.identityaccess.domain.entities.Employee;
 import org.seniorcare.identityaccess.domain.entities.Manager;
@@ -16,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UpdateEmployeeCommandHandler {
@@ -24,28 +23,24 @@ public class UpdateEmployeeCommandHandler {
     private final IDoctorRepository doctorRepository;
     private final INurseRepository nurseRepository;
     private final IManagerRepository managerRepository;
-    private final EmployeeDTOMapper employeeDTOMapper;
 
     public UpdateEmployeeCommandHandler(
             IEmployeeRepository employeeRepository,
             IDoctorRepository doctorRepository,
             INurseRepository nurseRepository,
-            IManagerRepository managerRepository,
-            EmployeeDTOMapper employeeDTOMapper) {
+            IManagerRepository managerRepository) {
         this.employeeRepository = employeeRepository;
         this.doctorRepository = doctorRepository;
         this.nurseRepository = nurseRepository;
         this.managerRepository = managerRepository;
-        this.employeeDTOMapper = employeeDTOMapper;
     }
 
     @Transactional
-    public EmployeeDTO handle(UpdateEmployeeCommand command) {
+    public UUID handle(UpdateEmployeeCommand command) {
         Employee employeeToUpdate = employeeRepository.findById(command.employeeId())
                 .orElseThrow(() -> new NoSuchElementException("Employee com id " + command.employeeId() + " não encontrado."));
 
         validateUniqueIdentifiers(command, employeeToUpdate);
-
 
         // TODO: [ARQUITETURA] Este bloco if/else viola o Princípio Aberto/Fechado (OCP).
         // Se o número de tipos de Employee crescer, refatorar para um Strategy Pattern,
@@ -77,7 +72,7 @@ public class UpdateEmployeeCommandHandler {
 
         employeeRepository.save(employeeToUpdate);
 
-        return employeeDTOMapper.toDTO(employeeToUpdate);
+        return employeeToUpdate.getId();
     }
 
     private void validateUniqueIdentifiers(UpdateEmployeeCommand command, Employee currentEmployee) {
@@ -94,6 +89,5 @@ public class UpdateEmployeeCommandHandler {
                 throw new IllegalStateException("COREN " + command.coren() + " já está em uso por outro funcionário.");
             }
         }
-        
     }
 }
